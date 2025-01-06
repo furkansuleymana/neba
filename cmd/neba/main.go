@@ -1,13 +1,27 @@
 package main
 
-import "github.com/gofiber/fiber/v2"
+import (
+	"io/fs"
+	"log"
+	"net/http"
+
+	"github.com/furkansuleymana/neba/ui"
+)
 
 func main() {
-	app := fiber.New()
 
-	app.Get("/", func(c *fiber.Ctx) error {
-		return c.SendString("Hello from Neba!")
-	})
+	fileSystem, err := fs.Sub(ui.Dist, "dist")
+	if err != nil {
+		log.Fatalf("failed to create filesystem: %v", err)
+	}
 
-	app.Listen(":3000")
+	http.Handle("/", http.FileServer(http.FS(fileSystem)))
+
+	addr := ":8080"
+	log.Printf("starting server on %s\n", addr)
+
+	if err := http.ListenAndServe(addr, nil); err != nil {
+		log.Fatalf("failed to start server: %v", err)
+	}
+
 }
