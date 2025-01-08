@@ -20,14 +20,14 @@ tidy:
 # build the application
 .PHONY: build
 build:
-	go build -o /tmp/bin/${binary_name} ${main_package_path}
+	go build -o ./tmp/${binary_name} ${main_package_path}
 
 # run the application
 .PHONY: run
 run: build
-	/tmp/bin/${binary_name}
+	./tmp/${binary_name}
 
 # build the application for production
 .PHONY: prod
 prod:
-	GOOS=windows GOARCH=amd64 go build -ldflags='-s' -o build/${binary_name} ${main_package_path}
+	GOOS=windows GOARCH=amd64 go build -ldflags='-s' -o ./build/${binary_name} ${main_package_path}

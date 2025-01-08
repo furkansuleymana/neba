@@ -30,3 +30,5 @@ go.work.sum
 /ui/pnpm-debug.log*
 /ui/yarn-debug.log*
 /ui/yarn-error.log*
+
+/tmp/*
