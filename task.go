@@ -5,17 +5,16 @@ import (
 	"log"
 	"os"
 	"os/exec"
-	"path/filepath"
 )
 
 const (
 	binaryName      = "neba"
 	buildDirectory  = "./build"
+	binaryPath      = "./build/neba.exe"
 	mainPackagePath = "./cmd/neba"
 )
 
 var (
-	binaryPath             = filepath.Join(buildDirectory, binaryName)
 	environmentalVariables = []string{
 		"CGO_ENABLED=0",
 		"GOOS=windows",
@@ -31,7 +30,7 @@ func main() {
 		"production": production,
 	}
 
-	taskName := "production"
+	taskName := "run"
 	if len(os.Args) > 1 {
 		taskName = os.Args[1]
 	}
@@ -51,13 +50,9 @@ func executeCommand(name string, args ...string) {
 	cmd.Env = append(os.Environ(), environmentalVariables...)
 
 	if err := cmd.Run(); err != nil {
-		log.Fatalf("command: %s %s", name, args)
+		// log.Fatalf("command: %s %s", name, args)
 		log.Fatalf("command %s failed: %v", name, err)
 	}
-}
-
-func ensureBuildDirectory() {
-	os.MkdirAll(buildDirectory, os.ModePerm)
 }
 
 func clean() {
@@ -73,8 +68,7 @@ func tidy() {
 
 func run() {
 	fmt.Println("running application...")
-	ensureBuildDirectory()
-	executeCommand("go", "build", "-v", "-o", binaryPath, mainPackagePath)
+	executeCommand("go", "build", "-o", binaryPath, mainPackagePath)
 	executeCommand(binaryPath)
 }
 
@@ -82,6 +76,6 @@ func production() {
 	fmt.Println("building application for production...")
 	clean()
 	tidy()
-	ensureBuildDirectory()
-	executeCommand("go", "build", "-o", binaryPath, mainPackagePath)
+	// TODO: cross-platform build with ldflags
+	// TODO: auto versioning
 }
