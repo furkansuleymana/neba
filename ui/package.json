@@ -1,7 +1,11 @@
 {
   "name": "neba",
-  "private": true,
   "version": "0.1.0",
+  "author": {
+    "name": "Furkan",
+    "email": "furkansuleymanalici@gmail.com"
+  },
+  "private": true,
   "type": "module",
   "scripts": {
     "build": "tsc -b && vite build",
