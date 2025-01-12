@@ -1,3 +1,7 @@
+_2025-01-12_
+
+> I'm considering giving up blogging because it consumes too much time that I could otherwise spend writing more code.
+
 _2025-01-09_
 
 > Today, I found myself spending more time than expected wrestling with build tools. Initially, I had no intention of replacing Make, but its syntax and lack of compatibility with Windows eventually got the better of me. I began exploring alternatives like Task and Just, which seemed promising, but I realized that each of these would introduce more to manage. Perhaps the simplest solution is just to stick with a Makefile, but here I am.
