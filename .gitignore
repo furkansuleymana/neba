@@ -11,6 +11,9 @@ build/
 go.work
 go.work.sum
 
+/.idea
+/.vscode
+
 /ui/.DS_Store
 /ui/.idea
 /ui/.vscode/*
