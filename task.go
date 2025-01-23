@@ -1,8 +1,7 @@
 package main
 
 import (
-	"fmt"
-	"log"
+	"log/slog"
 	"os"
 	"os/exec"
 )
@@ -37,7 +36,8 @@ func main() {
 
 	task, exists := tasks[taskName]
 	if !exists {
-		log.Fatalf("unknown task: %s", taskName)
+		slog.Error("specified task is not defined", "task", taskName)
+		os.Exit(1)
 	}
 
 	task()
@@ -50,30 +50,28 @@ func executeCommand(name string, args ...string) {
 	cmd.Env = append(os.Environ(), environmentalVariables...)
 
 	if err := cmd.Run(); err != nil {
-		// log.Fatalf("command: %s %s", name, args)
-		log.Fatalf("command %s failed: %v", name, err)
+		slog.Error("command exited with error",
+			slog.String("name", name),
+			slog.Any("args", args),
+			slog.Any("error", err))
 	}
 }
 
 func clean() {
-	fmt.Println("cleaning build directory...")
 	os.RemoveAll(buildDirectory)
 }
 
 func tidy() {
-	fmt.Println("tidying and formatting code...")
 	executeCommand("go", "mod", "tidy", "-v")
 	executeCommand("go", "fmt", "./...")
 }
 
 func run() {
-	fmt.Println("running application...")
 	executeCommand("go", "build", "-o", binaryPath, mainPackagePath)
 	executeCommand(binaryPath)
 }
 
 func production() {
-	fmt.Println("building application for production...")
 	clean()
 	tidy()
 	// TODO: cross-platform build with ldflags
