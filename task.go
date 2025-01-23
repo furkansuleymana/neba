@@ -58,7 +58,9 @@ func executeCommand(name string, args ...string) {
 }
 
 func clean() {
-	os.RemoveAll(buildDirectory)
+	if err := os.RemoveAll(buildDirectory); err != nil {
+		return
+	}
 }
 
 func tidy() {

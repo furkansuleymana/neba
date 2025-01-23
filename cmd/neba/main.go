@@ -13,7 +13,7 @@ import (
 
 func main() {
 	// create settings manager
-	cm, err := settings.NewSettingsManager()
+	cm, err := settings.SettingsManager()
 	if err != nil {
 		os.Exit(1)
 	}

@@ -30,13 +30,13 @@ type ApplicationSettings struct {
 	} `json:"database"`
 }
 
-type SettingsManager struct {
+type Manager struct {
 	mutex    sync.RWMutex
 	path     string
 	settings ApplicationSettings
 }
 
-func NewSettingsManager() (*SettingsManager, error) {
+func SettingsManager() (*Manager, error) {
 	cwd, err := os.Getwd() // get cwd first
 	if err != nil {
 		return nil, fmt.Errorf("get working directory: %w", err)
@@ -44,7 +44,7 @@ func NewSettingsManager() (*SettingsManager, error) {
 
 	settingsPath := filepath.Join(cwd, storageDirectory, settingsFileName)
 
-	manager := &SettingsManager{path: settingsPath}
+	manager := &Manager{path: settingsPath}
 
 	if err := manager.ensureSettingsFile(); err != nil {
 		return nil, err
@@ -60,13 +60,13 @@ func NewSettingsManager() (*SettingsManager, error) {
 	return manager, nil
 }
 
-func (cm *SettingsManager) Get() ApplicationSettings {
+func (cm *Manager) Get() ApplicationSettings {
 	cm.mutex.RLock()
 	defer cm.mutex.RUnlock()
 	return cm.settings
 }
 
-func (cm *SettingsManager) Update(updateFunc func(*ApplicationSettings)) error {
+func (cm *Manager) Update(updateFunc func(*ApplicationSettings)) error {
 	cm.mutex.Lock()
 	defer cm.mutex.Unlock()
 
@@ -74,7 +74,7 @@ func (cm *SettingsManager) Update(updateFunc func(*ApplicationSettings)) error {
 	return cm.save()
 }
 
-func (cm *SettingsManager) ensureSettingsFile() error {
+func (cm *Manager) ensureSettingsFile() error {
 	if _, err := os.Stat(cm.path); err == nil {
 		slog.Info("settings file already exists",
 			slog.String("path", cm.path))
@@ -94,7 +94,7 @@ func (cm *SettingsManager) ensureSettingsFile() error {
 	return nil
 }
 
-func (cm *SettingsManager) load() error {
+func (cm *Manager) load() error {
 	data, err := os.ReadFile(cm.path)
 	if err != nil {
 		return fmt.Errorf("read settings file: %w", err)
@@ -109,7 +109,7 @@ func (cm *SettingsManager) load() error {
 	return nil
 }
 
-func (cm *SettingsManager) save() error {
+func (cm *Manager) save() error {
 	data, err := json.MarshalIndent(cm.settings, "", "  ")
 	if err != nil {
 		return fmt.Errorf("marshal settings: %w", err)

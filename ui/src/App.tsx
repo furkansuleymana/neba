@@ -1,3 +1,3 @@
 export default function App() {
-  return "Hello from Neba!";
+    return "Hello from Neba!";
 }
