@@ -9,14 +9,12 @@ import (
 )
 
 func Param(ip string, username string, password string) error {
-	url := fmt.Sprintf("http://%s/axis-cgi/param.cgi", ip)
+	url := fmt.Sprintf("http://%s/axis-cgi/param.cgi?action=list", ip)
 
-	client := http.Client{}
-	digest := &tools.DigestAuth{}
-
-	req, err := digest.Authenticate(username, password, url, &client)
+	client := &http.Client{}
+	req, err := tools.Authenticate(username, password, url, client)
 	if err != nil {
-		return fmt.Errorf("failed to authenticate: %v", err)
+		return fmt.Errorf("authentication failed: %v", err)
 	}
 
 	resp, err := client.Do(req)
