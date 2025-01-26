@@ -6,6 +6,6 @@
     }
   },
   "database": {
-    "path": "data/neba.db"
+    "path": "/neba/db.db"
   }
 }
