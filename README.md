@@ -24,7 +24,7 @@ Neba is not yet operational.
 ## Development
 
 Ensure you have [Go 1.23](https://go.dev/doc/install) or later installed. To build the application, simply execute
-`go run .` in the main project directory. Additional build commands can be found in the [`make.go`](make.go) file.
+`go run ./make.go production` in the main project directory. Additional build commands can be found in the [`make.go`](make.go) file.
 
 ## Key Features
 
