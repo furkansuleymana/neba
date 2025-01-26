@@ -1,3 +1,5 @@
+//go:build exclude
+
 package main
 
 import (
@@ -7,7 +9,6 @@ import (
 )
 
 const (
-	binaryName      = "neba"
 	buildDirectory  = "./build"
 	binaryPath      = "./build/neba.exe"
 	mainPackagePath = "./cmd/neba"

@@ -5,14 +5,14 @@ import (
 	"io"
 	"net/http"
 
-	"github.com/furkansuleymana/neba/tools"
+	"github.com/furkansuleymana/neba/network"
 )
 
 func Param(ip string, username string, password string) error {
 	url := fmt.Sprintf("http://%s/axis-cgi/param.cgi?action=list", ip)
 
 	client := &http.Client{}
-	req, err := tools.Authenticate(username, password, url, client)
+	req, err := network.Authenticate(username, password, url, client)
 	if err != nil {
 		return fmt.Errorf("authentication failed: %v", err)
 	}

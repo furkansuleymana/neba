@@ -1,6 +1,6 @@
 // This file is heavily inspired by @Reve.
 // Source: https://github.com/Reve/httpDigestAuth/blob/master/httpDigestAuth.go
-package tools
+package network
 
 import (
 	"crypto/md5"
