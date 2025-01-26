@@ -17,7 +17,9 @@ func restartHandler() http.HandlerFunc {
 			return
 		}
 
-		if err := api.Restart(); err != nil {
+		err := api.Restart("ip_address", "username", "password")
+
+		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}

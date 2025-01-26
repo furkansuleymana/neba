@@ -33,7 +33,7 @@ func main() {
 	})
 
 	// TESTING
-	err = api.Param("192.168.33.207", "root", "pass")
+	err = api.Restart("192.168.33.207", "root", "pass")
 	if err != nil {
 		log.Fatal(err)
 	}
