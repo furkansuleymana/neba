@@ -3,7 +3,7 @@
 package main
 
 import (
-	"log/slog"
+	"log"
 	"os"
 	"os/exec"
 )
@@ -11,7 +11,7 @@ import (
 const (
 	buildDirectory  = "./build"
 	binaryPath      = "./build/neba.exe"
-	mainPackagePath = "./cmd/neba"
+	mainPackagePath = "."
 )
 
 var (
@@ -37,8 +37,7 @@ func main() {
 
 	task, exists := tasks[taskName]
 	if !exists {
-		slog.Error("specified task is not defined", "task", taskName)
-		os.Exit(1)
+		log.Fatalf(taskName)
 	}
 
 	task()
@@ -51,10 +50,7 @@ func executeCommand(name string, args ...string) {
 	cmd.Env = append(os.Environ(), environmentalVariables...)
 
 	if err := cmd.Run(); err != nil {
-		slog.Error("command exited with error",
-			slog.String("name", name),
-			slog.Any("args", args),
-			slog.Any("error", err))
+		log.Fatal(err)
 	}
 }
 
