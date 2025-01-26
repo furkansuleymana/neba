@@ -47,7 +47,7 @@ type DigestAuth struct {
 //   - A pointer to a DigestAuth instance populated with the authentication parameters.
 //   - An error if the request fails, the response status code is unexpected, or
 //     the WWW-Authenticate header cannot be parsed.
-func (d *DigestAuth) Authenticate(username, password, uri string, client *http.Client) (*DigestAuth, error) {
+func (d *DigestAuth) Authenticate(username, password, uri string, client *http.Client) (*http.Request, error) {
 	req, err := http.NewRequest(http.MethodGet, uri, nil)
 	if err != nil {
 		return nil, fmt.Errorf("failed to create request: %w", err)
@@ -62,7 +62,7 @@ func (d *DigestAuth) Authenticate(username, password, uri string, client *http.C
 
 	if resp.StatusCode != http.StatusUnauthorized {
 		if resp.StatusCode == http.StatusOK {
-			return nil, nil // Auth not required
+			return req, nil // Auth not required
 		}
 		return nil, fmt.Errorf("unexpected status code: %d", resp.StatusCode)
 	}
@@ -72,17 +72,19 @@ func (d *DigestAuth) Authenticate(username, password, uri string, client *http.C
 		return nil, fmt.Errorf("failed to parse WWW-Authenticate header")
 	}
 
-	return &DigestAuth{
-		realm:      authParams["realm"],
-		qop:        authParams["qop"],
-		nonce:      authParams["nonce"],
-		opaque:     authParams["opaque"],
-		algorithm:  strings.ToUpper(authParams["algorithm"]),
-		nonceCount: 0,
-		username:   username,
-		password:   password,
-		uri:        uri,
-	}, nil
+	d.realm = authParams["realm"]
+	d.qop = authParams["qop"]
+	d.nonce = authParams["nonce"]
+	d.opaque = authParams["opaque"]
+	d.algorithm = strings.ToUpper(authParams["algorithm"])
+	d.uri = uri
+	d.nonceCount = 0
+	d.username = username
+	d.password = password
+
+	d.AddAuthHeader(req)
+
+	return req, nil
 }
 
 // AddAuthHeader adds the Digest authentication header to the provided HTTP request.

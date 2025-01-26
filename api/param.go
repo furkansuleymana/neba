@@ -8,29 +8,23 @@ import (
 	"github.com/furkansuleymana/neba/tools"
 )
 
-var DigestAuth *tools.DigestAuth
-
 func Param(ip string, username string, password string) error {
 	url := fmt.Sprintf("http://%s/axis-cgi/param.cgi", ip)
 
-	httpClient := http.Client{}
-	req, _ := http.NewRequest("GET", url, nil)
+	client := http.Client{}
+	digest := &tools.DigestAuth{}
 
-	DigestAuth, err := DigestAuth.Authenticate(username, password, url, &httpClient)
+	req, err := digest.Authenticate(username, password, url, &client)
 	if err != nil {
-		req.SetBasicAuth(username, password)
-		resp, _ := httpClient.Do(req)
-		body, err := io.ReadAll(resp.Body)
-		if err != nil {
-			return fmt.Errorf("reading response body: %v", err)
-		}
-		fmt.Println(string(body))
-		return nil
-	} // TODO: DRY
+		return fmt.Errorf("failed to authenticate: %v", err)
+	}
 
-	DigestAuth.AddAuthHeader(req)
+	resp, err := client.Do(req)
+	if err != nil {
+		return fmt.Errorf("failed to make request: %v", err)
+	}
+	defer resp.Body.Close()
 
-	resp, _ := httpClient.Do(req)
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {
 		return fmt.Errorf("reading response body: %v", err)

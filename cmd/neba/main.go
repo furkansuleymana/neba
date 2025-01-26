@@ -2,12 +2,11 @@ package main
 
 import (
 	"log"
-	"log/slog"
 	"net/http"
 	"os"
 
+	"github.com/furkansuleymana/neba/api"
 	"github.com/furkansuleymana/neba/configs"
-	"github.com/furkansuleymana/neba/discovery"
 	"github.com/furkansuleymana/neba/handlers"
 	"github.com/furkansuleymana/neba/ui"
 )
@@ -34,10 +33,11 @@ func main() {
 	})
 
 	// TESTING
-	deviceList, _ := discovery.DiscoverWithSSDP()
-	for _, device := range deviceList {
-		slog.Info("Found device", slog.String("device", device))
+	err = api.Param("192.168.33.207", "root", "pass")
+	if err != nil {
+		log.Fatal(err)
 	}
+	os.Exit(0)
 	// TESTING
 
 	// Go!
