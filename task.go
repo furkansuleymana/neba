@@ -70,6 +70,7 @@ func tidy() {
 
 func run() {
 	clean()
+	tidy()
 	executeCommand("go", "build", "-o", binaryPath, mainPackagePath)
 	executeCommand(binaryPath)
 }
