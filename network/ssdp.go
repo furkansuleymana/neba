@@ -22,9 +22,23 @@ MX:3
 	bufferSize           = 2048
 )
 
-// DiscoverWithSSDP sends an SSDP M-SEARCH request and returns
-// a list of discovered device locations.
-func DiscoverWithSSDP() ([]string, error) {
+// DiscoverSSDP discovers devices on the network using the Simple Service Discovery Protocol (SSDP).
+// It sends an M-SEARCH request to the SSDP multicast address and listens for responses from devices.
+//
+// Returns a slice of device locations (URLs) and an error if any occurred during the discovery process.
+//
+// The function performs the following steps:
+// 1. Creates a UDP connection.
+// 2. Resolves the SSDP multicast address.
+// 3. Sends the M-SEARCH request to the multicast address.
+// 4. Sets a deadline for the connection to avoid indefinite blocking.
+// 5. Reads responses from the connection until the deadline is reached.
+// 6. Extracts device locations from the responses and returns them.
+//
+// Returns:
+// - []string: A slice of device locations (URLs) discovered on the network.
+// - error: An error if any occurred during the discovery process.
+func DiscoverSSDP() ([]string, error) {
 	// Create a UDP connection
 	conn, err := net.ListenPacket("udp4", ":0")
 	if err != nil {

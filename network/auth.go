@@ -91,7 +91,7 @@ func (d *DigestAuth) handleDigestAuth(username, password, uri, authHeader string
 		return nil, fmt.Errorf("failed to parse WWW-Authenticate header")
 	}
 
-	d.initialize(authParams, username, password, uri)
+	d.setup(authParams, username, password, uri)
 
 	req, err := http.NewRequest(http.MethodGet, uri, nil)
 	if err != nil {
@@ -114,10 +114,26 @@ func (d *DigestAuth) addDigestAuthHeader(req *http.Request) {
 	d.uri = req.URL.RequestURI()
 	d.computeDigest(req.Method)
 
-	hash := fmt.Sprintf("%x", md5.Sum([]byte(fmt.Sprintf("%s:%s:%08x:%s:%s:%s", d.ha1, d.nonce, d.nonceCount, d.cnonce, d.qop, d.ha2))))
+	input := fmt.Sprintf("%s:%s:%08x:%s:%s:%s",
+		d.ha1,
+		d.nonce,
+		d.nonceCount,
+		d.cnonce,
+		d.qop,
+		d.ha2)
+	hash := fmt.Sprintf("%x", md5.Sum([]byte(input)))
+
 	authHeader := fmt.Sprintf(
 		`Digest username="%s", realm="%s", nonce="%s", uri="%s", cnonce="%s", nc=%08x, qop=%s, response="%s", algorithm=%s`,
-		d.username, d.realm, d.nonce, d.uri, d.cnonce, d.nonceCount, d.qop, hash, d.algorithm,
+		d.username,
+		d.realm,
+		d.nonce,
+		d.uri,
+		d.cnonce,
+		d.nonceCount,
+		d.qop,
+		hash,
+		d.algorithm,
 	)
 	if d.opaque != "" {
 		authHeader += fmt.Sprintf(", opaque=\"%s\"", d.opaque)
@@ -154,8 +170,11 @@ func parseDigestAuthParams(header string) map[string]string {
 // Parameters:
 //   - method: The HTTP method (e.g., "GET", "POST") used in the request.
 func (d *DigestAuth) computeDigest(method string) {
-	d.ha1 = fmt.Sprintf("%x", md5.Sum([]byte(fmt.Sprintf("%s:%s:%s", d.username, d.realm, d.password))))
-	d.ha2 = fmt.Sprintf("%x", md5.Sum([]byte(fmt.Sprintf("%s:%s", method, d.uri))))
+	data1 := fmt.Sprintf("%s:%s:%s", d.username, d.realm, d.password)
+	d.ha1 = fmt.Sprintf("%x", md5.Sum([]byte(data1)))
+
+	data2 := fmt.Sprintf("%s:%s", method, d.uri)
+	d.ha2 = fmt.Sprintf("%x", md5.Sum([]byte(data2)))
 }
 
 // generateRandomKey generates a random 12-byte key and returns it as a base64 encoded string.
@@ -168,7 +187,7 @@ func generateRandomKey() string {
 	return base64.StdEncoding.EncodeToString(key)
 }
 
-// initialize sets up the DigestAuth instance with the provided authentication parameters,
+// setup sets up the DigestAuth instance with the provided authentication parameters,
 // username, password, and URI. It initializes the realm, qop, nonce, opaque, and algorithm
 // fields from the authParams map, sets the URI, and initializes the nonce count to 0.
 // It also sets the username and password for the DigestAuth instance.
@@ -178,7 +197,7 @@ func generateRandomKey() string {
 //   - username:   the username for authentication
 //   - password:   the password for authentication
 //   - uri:        the URI for the request
-func (d *DigestAuth) initialize(authParams map[string]string, username, password, uri string) {
+func (d *DigestAuth) setup(authParams map[string]string, username, password, uri string) {
 	d.realm = authParams["realm"]
 	d.qop = authParams["qop"]
 	d.nonce = authParams["nonce"]

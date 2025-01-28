@@ -11,8 +11,8 @@ func RegisterFactoryDefaultRoute(mux *http.ServeMux) {
 }
 
 func factoryDefaultHandler() http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != http.MethodGet {
+	return func(w http.ResponseWriter, req *http.Request) {
+		if req.Method != http.MethodGet {
 			http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
 			return
 		}

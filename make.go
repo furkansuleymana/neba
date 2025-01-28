@@ -9,13 +9,13 @@ import (
 )
 
 const (
-	buildDirectory  = "./build"
-	binaryPath      = "./build/neba.exe"
-	mainPackagePath = "."
+	buildDir    = "./build"
+	binPath     = "./build/neba.exe"
+	mainPkgPath = "."
 )
 
 var (
-	environmentalVariables = []string{
+	env = []string{
 		"CGO_ENABLED=0",
 		"GOOS=windows",
 		"GOARCH=amd64",
@@ -24,30 +24,20 @@ var (
 
 func main() {
 	tasks := map[string]func(){
-		"clean":      clean,
-		"tidy":       tidy,
-		"run":        run,
-		"production": production,
+		"clean": clean, "tidy": tidy, "run": run, "production": prod,
 	}
-
 	taskName := "run"
 	if len(os.Args) > 1 {
 		taskName = os.Args[1]
 	}
-
-	task, exists := tasks[taskName]
-	if !exists {
-		log.Fatalf(taskName)
-	}
-
-	task()
+	tasks[taskName]()
 }
 
-func executeCommand(name string, args ...string) {
+func do(name string, args ...string) {
 	cmd := exec.Command(name, args...)
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
-	cmd.Env = append(os.Environ(), environmentalVariables...)
+	cmd.Env = append(os.Environ(), env...)
 
 	if err := cmd.Run(); err != nil {
 		log.Fatal(err)
@@ -55,24 +45,24 @@ func executeCommand(name string, args ...string) {
 }
 
 func clean() {
-	if err := os.RemoveAll(buildDirectory); err != nil {
+	if err := os.RemoveAll(buildDir); err != nil {
 		return
 	}
 }
 
 func tidy() {
-	executeCommand("go", "mod", "tidy", "-v")
-	executeCommand("go", "fmt", "./...")
+	do("go", "mod", "tidy", "-v")
+	do("go", "vet", "./...")
+	do("go", "fmt", "./...")
 }
 
 func run() {
 	clean()
-	tidy()
-	executeCommand("go", "build", "-o", binaryPath, mainPackagePath)
-	executeCommand(binaryPath)
+	do("go", "build", "-o", binPath, mainPkgPath)
+	do(binPath)
 }
 
-func production() {
+func prod() {
 	clean()
 	tidy()
 	// TODO: cross-platform build with ldflags

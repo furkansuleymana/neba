@@ -15,8 +15,8 @@ var defaultConfig []byte
 
 const (
 	// Configuration constants
-	storageDirectory = "build" // TODO: fix
-	configFileName   = "config.json"
+	storageDir     = "build" // TODO: fix
+	configFileName = "config.json"
 )
 
 // AppConfig holds the application's configuration settings as defined in the
@@ -35,10 +35,10 @@ type AppConfig struct {
 	} `json:"database"`
 }
 
-// Manager is a struct that manages the configuration of the application.
+// CManager is a struct that manages the configuration of the application.
 // It includes a mutex for read/write locking, a path to the configuration file,
 // and the application configuration itself.
-type Manager struct {
+type CManager struct {
 	mutex  sync.RWMutex
 	path   string
 	config AppConfig
@@ -50,30 +50,30 @@ type Manager struct {
 // If any step fails, an error is returned.
 //
 // Returns:
-//   - *Manager: A pointer to the initialized configuration manager.
+//   - *CManager: A pointer to the initialized configuration manager.
 //   - error: An error if any step in the initialization process fails.
-func ConfigManager() (*Manager, error) {
+func ConfigManager() (*CManager, error) {
 	cwd, err := os.Getwd()
 	if err != nil {
 		return nil, fmt.Errorf("get working directory: %w", err)
 	}
 
-	configPath := filepath.Join(cwd, storageDirectory, configFileName)
+	configPath := filepath.Join(cwd, storageDir, configFileName)
 
-	manager := &Manager{path: configPath}
+	cm := &CManager{path: configPath}
 
-	if err := manager.ensureConfigFile(); err != nil {
+	if err := cm.ensureConfigFile(); err != nil {
 		return nil, err
 	}
 
-	if err := manager.load(); err != nil {
+	if err := cm.load(); err != nil {
 		return nil, err
 	}
 
 	slog.Debug("created config manager",
 		slog.String("cwd", cwd),
 		slog.String("path", configPath))
-	return manager, nil
+	return cm, nil
 }
 
 // Get retrieves the current application configuration in a thread-safe manner.
@@ -83,14 +83,14 @@ func ConfigManager() (*Manager, error) {
 //
 // Returns:
 //   - AppConfig: The current application configuration.
-func (cm *Manager) Get() AppConfig {
+func (cm *CManager) Get() AppConfig {
 	cm.mutex.RLock()
 	defer cm.mutex.RUnlock()
 	return cm.config
 }
 
 // Update applies the provided update function to the AppConfig instance
-// managed by the Manager. It ensures that the update is performed in a
+// managed by the CManager. It ensures that the update is performed in a
 // thread-safe manner by acquiring a lock before applying the update and
 // releasing it afterward. After the update function is executed, the
 // updated configuration is saved.
@@ -101,7 +101,7 @@ func (cm *Manager) Get() AppConfig {
 //
 // Returns:
 //   - error: An error if the save operation fails, otherwise nil.
-func (cm *Manager) Update(updateFunc func(*AppConfig)) error {
+func (cm *CManager) Update(updateFunc func(*AppConfig)) error {
 	cm.mutex.Lock()
 	defer cm.mutex.Unlock()
 
@@ -117,7 +117,7 @@ func (cm *Manager) Update(updateFunc func(*AppConfig)) error {
 //
 // Returns:
 //   - error: An error if the file creation or writing fails.
-func (cm *Manager) ensureConfigFile() error {
+func (cm *CManager) ensureConfigFile() error {
 	if _, err := os.Stat(cm.path); err == nil {
 		slog.Debug("config file already exists",
 			slog.String("path", cm.path))
@@ -138,12 +138,12 @@ func (cm *Manager) ensureConfigFile() error {
 }
 
 // load reads the configuration file from the specified path and unmarshals its content
-// into the Manager's config field. It returns an error if the file cannot be read or
+// into the CManager's config field. It returns an error if the file cannot be read or
 // if the content cannot be parsed as JSON.
 //
 // Returns:
 //   - error: An error if there is an issue reading the file or parsing its content.
-func (cm *Manager) load() error {
+func (cm *CManager) load() error {
 	data, err := os.ReadFile(cm.path)
 	if err != nil {
 		return fmt.Errorf("read config file: %w", err)
@@ -158,12 +158,12 @@ func (cm *Manager) load() error {
 	return nil
 }
 
-// save serializes the Manager's configuration to JSON format and writes it to a file.
+// save serializes the CManager's configuration to JSON format and writes it to a file.
 // It returns an error if the serialization or file writing fails.
 //
 // Returns:
 //   - error: An error if the serialization or file writing fails.
-func (cm *Manager) save() error {
+func (cm *CManager) save() error {
 	data, err := json.MarshalIndent(cm.config, "", "  ")
 	if err != nil {
 		return fmt.Errorf("marshal config: %w", err)

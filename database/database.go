@@ -12,14 +12,14 @@ import (
 // If the database or bucket does not exist, they will be created.
 //
 // Parameters:
-//   - databasePath: The file path to the BoltDB database.
+//   - dbPath: The file path to the BoltDB database.
 //   - bucketName: The name of the bucket to ensure exists.
 //
 // Returns:
 //   - *bbolt.DB: A pointer to the opened BoltDB database.
 //   - error: An error if the database or bucket could not be opened or created.
-func Open(databasePath string, bucketName string) (*bbolt.DB, error) {
-	db, err := bbolt.Open(databasePath, 0600, nil)
+func Open(dbPath string, bucketName string) (*bbolt.DB, error) {
+	db, err := bbolt.Open(dbPath, 0600, nil)
 	if err != nil {
 		return nil, fmt.Errorf("open database, %v", err)
 	}
@@ -76,6 +76,7 @@ func Update(db *bbolt.DB, bucketName string, device models.AxisDevice) error {
 //   - An error if the bucket or device is not found, or if there is an issue unmarshalling the JSON data.
 func View(db *bbolt.DB, bucketName string, serialNumber string) (*models.AxisDevice, error) {
 	var device models.AxisDevice
+
 	err := db.View(func(tx *bbolt.Tx) error {
 		bucket := tx.Bucket([]byte(bucketName))
 		if bucket == nil {
