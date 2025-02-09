@@ -1,6 +1,6 @@
 module github.com/furkansuleymana/neba
 
-go 1.23
+go 1.22
 
 require go.etcd.io/bbolt v1.3.11
 
