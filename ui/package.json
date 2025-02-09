@@ -9,7 +9,7 @@
   "type": "module",
   "scripts": {
     "build": "tsc -b && vite build",
-    "clean": "rm -rf node_modules && npm cache verify && npm prune",
+    "clean": "npm cache verify && npm prune",
     "dev": "vite",
     "lint": "eslint . --fix",
     "preview": "vite preview"
