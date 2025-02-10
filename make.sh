@@ -24,8 +24,8 @@ build() {
 
 # Run project in development mode
 dev() {
-  go run "${ROOT_DIR}"
-  npm --prefix "$BUILD_DIR_NPM" run dev
+  go run "${ROOT_DIR}" &
+  npm --prefix "$BUILD_DIR_NPM" run dev &
 }
 
 # Tidy project
