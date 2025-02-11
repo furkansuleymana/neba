@@ -18,6 +18,7 @@ LDFLAGS="-s"
 build() {
   clean
   tidy
+  npm --prefix "$BUILD_DIR_NPM" run clean
   npm --prefix "$BUILD_DIR_NPM" run build
   go build -ldflags="${LDFLAGS}" -o "${BUILD_DIR_GO}/${BINARY_NAME}" "${ROOT_DIR}"
 }
@@ -40,7 +41,6 @@ clean() {
   rm -rf "$BUILD_DIR_GO"
   rm -rf "$BUILD_DIR_NPM/dist"
   rm -rf "$BUILD_DIR_NPM/node_modules"
-  npm --prefix "$BUILD_DIR_NPM" run clean
 }
 
 # Get task name (default to "dev") and
