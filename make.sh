@@ -18,15 +18,15 @@ LDFLAGS="-s"
 build() {
   clean
   tidy
-  npm --prefix "$BUILD_DIR_NPM" install
-  npm --prefix "$BUILD_DIR_NPM" run build
+  run "$BUILD_DIR_NPM" "npm install"
+  run "$BUILD_DIR_NPM" "npm run build"
   go build -ldflags="${LDFLAGS}" -o "${BUILD_DIR_GO}/${BINARY_NAME}" "${ROOT_DIR}"
 }
 
 # Run project in development mode
 dev() {
   go run "${ROOT_DIR}" &
-  npm --prefix "$BUILD_DIR_NPM" run dev &
+  run "$BUILD_DIR_NPM" "npm run dev" &
 }
 
 # Tidy project
@@ -40,6 +40,12 @@ clean() {
   rm -rf "$BUILD_DIR_GO"
   rm -rf "$BUILD_DIR_NPM/dist"
   rm -rf "$BUILD_DIR_NPM/node_modules"
+}
+
+# Run command in directory
+run() {
+  cd "$1"
+  eval "$2"
 }
 
 # Get task name (default to "dev") and
