@@ -18,7 +18,7 @@ LDFLAGS="-s"
 build() {
   clean
   tidy
-  npm --prefix "$BUILD_DIR_NPM" run clean
+  npm --prefix "$BUILD_DIR_NPM" install
   npm --prefix "$BUILD_DIR_NPM" run build
   go build -ldflags="${LDFLAGS}" -o "${BUILD_DIR_GO}/${BINARY_NAME}" "${ROOT_DIR}"
 }
@@ -33,7 +33,6 @@ dev() {
 tidy() {
   go mod tidy -v
   go fmt ./...
-  npm --prefix "$BUILD_DIR_NPM" run lint
 }
 
 # Clean build directories

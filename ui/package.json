@@ -8,8 +8,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build": "tsc -b && vite build",
-    "clean": "npm cache verify && npm prune",
+    "build": "npm run lint && tsc -b && vite build",
     "dev": "vite",
     "lint": "eslint . --fix",
     "preview": "vite preview"
