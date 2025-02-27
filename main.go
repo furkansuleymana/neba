@@ -27,6 +27,7 @@ func main() {
 	handlers.RegisterFactoryDefaultRoute(mux)
 	handlers.RegisterFindDevicesRoute(mux)
 	handlers.RegisterRestartRoute(mux)
+	handlers.RegisterStreamRoute(mux)
 
 	// Serve UI
 	server := http.FileServer(http.FS(ui.DistDirFS))
@@ -37,7 +38,6 @@ func main() {
 	// TESTING
 	deviceList, _ := network.DiscoverSSDP()
 	slog.Info("", slog.Any("devices", deviceList))
-	os.Exit(0)
 	// TESTING
 
 	// Go!
