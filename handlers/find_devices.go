@@ -17,7 +17,7 @@ func handleFindDevices(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	devices, err := findDevices()
+	devices, err := network.DiscoverSSDP()
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -30,12 +30,4 @@ func handleFindDevices(w http.ResponseWriter, req *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-}
-
-func findDevices() ([]string, error) {
-	deviceList, err := network.DiscoverSSDP()
-	if err != nil {
-		return nil, err
-	}
-	return deviceList, nil
 }

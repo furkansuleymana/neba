@@ -1,136 +1,125 @@
 package network
 
 import (
-	"context"
+	"encoding/xml"
 	"fmt"
-	"net"
+	"io"
+	"net/http"
+	"net/url"
 	"strings"
-	"sync"
 	"time"
+
+	"github.com/koron/go-ssdp"
 )
 
 const (
-	mSearchMessage = `M-SEARCH * HTTP/1.1
-Host:239.255.255.250:1900
-ST:urn:axis-com:service:BasicService:1
-Man:"ssdp:discover"
-MX:3
-
-`
-	ssdpMulticastAddress = "239.255.255.250:1900"
-	ssdpTimeout          = 5 * time.Second
-	bufferSize           = 2048
-	expectedDevices      = 50
+	ssdpServiceType    = "urn:axis-com:service:BasicService:1"
+	ssdpMaxWaitTimeSec = 5
 )
 
-func DiscoverSSDP(ctx context.Context) ([]string, error) {
-	devices := make([]string, 0, expectedDevices)
-	var mu sync.Mutex
+var ssdpHTTPClient = &http.Client{
+	Timeout: 5 * time.Second,
+}
 
-	interfaces, err := net.Interfaces()
+type Root struct {
+	XMLName xml.Name `xml:"root"`
+	Device  Device   `xml:"device"`
+	URLBase string   `xml:"URLBase"`
+}
+
+type Device struct {
+	SerialNumber    string `xml:"serialNumber"`
+	PresentationURL string `xml:"presentationURL"`
+}
+
+// DiscoverSSDP performs a Simple Service Discovery Protocol (SSDP) search to discover devices on the network.
+// It returns a slice of maps, where each map contains information about a discovered device, such as its
+// serial number and IP address.
+//
+// Returns:
+// - []map[string]string: A slice of maps containing device information.
+// - error: An error if the SSDP search fails or no devices are found.
+//
+// Example device information map:
+//
+//	{
+//	    "SerialNumber": "123456789",
+//	    "IPAddress": "192.168.1.100",
+//	}
+//
+// Errors:
+// - If the SSDP search fails, an error is returned.
+// - If no SSDP devices are found, an error is returned.
+func DiscoverSSDP() ([]map[string]string, error) {
+	ssdpResponses, err := ssdp.Search(ssdpServiceType, ssdpMaxWaitTimeSec, "")
 	if err != nil {
-		return nil, fmt.Errorf("list network interfaces: %w", err)
+		return nil, fmt.Errorf("failed to SSDP search: %w", err)
+	}
+	if len(ssdpResponses) == 0 {
+		return nil, fmt.Errorf("no SSDP devices found")
 	}
 
-	var wg sync.WaitGroup
-	errCh := make(chan error, len(interfaces))
-
-	for _, iface := range interfaces {
-		if (iface.Flags&net.FlagUp) == 0 || (iface.Flags&net.FlagLoopback) != 0 {
+	devices := make([]map[string]string, 0, len(ssdpResponses))
+	for _, device := range ssdpResponses {
+		xmlData, err := fetchXMLData(device.Location)
+		if err != nil {
+			fmt.Printf("Failed to fetch XML data from %s: %v\n", device.Location, err)
 			continue
 		}
 
-		wg.Add(1)
-		go func(iface net.Interface) {
-			defer wg.Done()
-			if err := scanInterface(ctx, iface, &devices, &mu); err != nil {
-				errCh <- fmt.Errorf("interface %s: %w", iface.Name, err)
-			}
-		}(iface)
-	}
+		root, err := unmarshalXML(xmlData)
+		if err != nil {
+			fmt.Printf("Failed to unmarshal XML data: %v\n", err)
+			continue
+		}
 
-	wg.Wait()
-	close(errCh)
+		ipAddress := extractIPAddress(root.URLBase)
 
-	if err := <-errCh; err != nil {
-		return devices, err
+		deviceInfo := map[string]string{
+			"SerialNumber": root.Device.SerialNumber,
+			"IPAddress":    ipAddress,
+		}
+
+		devices = append(devices, deviceInfo)
 	}
 
 	return devices, nil
 }
 
-func scanInterface(ctx context.Context, iface net.Interface, devices *[]string, mu *sync.Mutex) error {
-	addrs, err := iface.Addrs()
+func fetchXMLData(urlStr string) ([]byte, error) {
+	httpResponse, err := ssdpHTTPClient.Get(urlStr)
 	if err != nil {
-		return fmt.Errorf("get addresses: %w", err)
+		return nil, fmt.Errorf("failed to fetch URL: %w", err)
+	}
+	defer httpResponse.Body.Close()
+
+	if httpResponse.StatusCode != http.StatusOK {
+		return nil, fmt.Errorf("failed to fetch URL: status code %d", httpResponse.StatusCode)
 	}
 
-	for _, addr := range addrs {
-		ipNet, ok := addr.(*net.IPNet)
-		if !ok || ipNet.IP.To4() == nil {
-			continue
-		}
-
-		if err := scanAddress(ctx, ipNet.IP.String(), devices, mu); err != nil {
-			return err
-		}
-	}
-	return nil
+	return io.ReadAll(httpResponse.Body)
 }
 
-func scanAddress(ctx context.Context, ip string, devices *[]string, mu *sync.Mutex) error {
-	conn, err := net.ListenPacket("udp4", ip+":0")
+func unmarshalXML(data []byte) (*Root, error) {
+	var root Root
+	err := xml.Unmarshal(data, &root)
 	if err != nil {
-		return fmt.Errorf("listen: %w", err)
+		return nil, fmt.Errorf("error unmarshalling XML: %w", err)
 	}
-	defer conn.Close()
-
-	udpAddr, err := net.ResolveUDPAddr("udp4", ssdpMulticastAddress)
-	if err != nil {
-		return fmt.Errorf("resolve multicast address: %w", err)
-	}
-
-	if _, err := conn.WriteTo([]byte(mSearchMessage), udpAddr); err != nil {
-		return fmt.Errorf("send discovery message: %w", err)
-	}
-
-	deadline := time.Now().Add(ssdpTimeout)
-	if err := conn.SetDeadline(deadline); err != nil {
-		return fmt.Errorf("set deadline: %w", err)
-	}
-
-	buffer := make([]byte, bufferSize)
-	for {
-		select {
-		case <-ctx.Done():
-			return ctx.Err()
-		default:
-			n, _, err := conn.ReadFrom(buffer)
-			if err != nil {
-				if netErr, ok := err.(net.Error); ok && netErr.Timeout() {
-					return nil
-				}
-				return fmt.Errorf("read response: %w", err)
-			}
-
-			if location := extractDeviceLocation(string(buffer[:n])); location != "" {
-				mu.Lock()
-				*devices = append(*devices, location)
-				mu.Unlock()
-			}
-		}
-	}
+	return &root, nil
 }
 
-func extractDeviceLocation(response string) string {
-	const locationPrefix = "location:"
-	for _, line := range strings.Split(response, "\r\n") {
-		if l := strings.ToLower(line); strings.Contains(l, locationPrefix) {
-			parts := strings.SplitN(line, ":", 2)
-			if len(parts) == 2 {
-				return strings.TrimSpace(parts[1])
-			}
-		}
+func extractIPAddress(urlStr string) string {
+	parsedURL, err := url.Parse(urlStr)
+	if err == nil {
+		hostParts := strings.Split(parsedURL.Host, ":")
+		return hostParts[0]
 	}
-	return ""
+
+	schemeOffset := strings.Index(urlStr, "http://") + len("http://")
+	hostEndPos := strings.IndexAny(urlStr[schemeOffset:], ":/")
+	if hostEndPos == -1 {
+		return urlStr[schemeOffset:]
+	}
+	return urlStr[schemeOffset : schemeOffset+hostEndPos]
 }
