@@ -9,7 +9,7 @@ BUILD_DIR_NPM="${ROOT_DIR}/ui"
 BINARY_NAME="neba"
 
 # Set environment variables
-export GOOS=windows
+export GOOS=linux
 export GOARCH=amd64
 export CGO_ENABLED=0
 LDFLAGS="-s"
@@ -26,7 +26,7 @@ build() {
 # Run project in development mode
 dev() {
   go run "${ROOT_DIR}" &
-  run "$BUILD_DIR_NPM" "npm run dev" &
+  run "$BUILD_DIR_NPM" "npm run dev"
 }
 
 # Tidy project
