@@ -21,6 +21,10 @@ manage devices from smartphones, tablets, or desktop computers.
 
 Neba is not yet operational.
 
+## Known Issues
+
+If your Linux firewall is blocking UDP multicast traffic, which is essential for SSDP, Neba will be unable to detect any devices. To resolve this issue, you can either temporarily disable the firewall for testing using the command `sudo systemctl stop firewalld`, or add Neba to the firewall's allowlist.
+
 ## Development
 
 Ensure you have [Go 1.22](https://go.dev/doc/install) or later installed. To build the application, simply execute `./make.sh build`
