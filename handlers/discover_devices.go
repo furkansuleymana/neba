@@ -40,7 +40,7 @@ func handleDiscoverDevices(w http.ResponseWriter, r *http.Request) {
 	tmpl, err := template.ParseFS(ui.TemplatesDirFS,
 		"layouts/base.html",
 		"components/navigation.html",
-		"discover_devices.html")
+		"routes/discover_devices.html")
 	if err != nil {
 		http.Error(w, "Failed to parse templates: "+err.Error(), http.StatusInternalServerError)
 		return

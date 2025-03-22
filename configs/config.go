@@ -15,7 +15,7 @@ var defaultConfig []byte
 
 const (
 	// Configuration constants
-	storageDir     = "build" // TODO: fix
+	storageDir     = "." // TODO: Make this safe for production
 	configFileName = "config.json"
 )
 

@@ -29,7 +29,15 @@ var navigationItems = []NavItem{
 }
 
 func RegisterIndexRoute(mux *http.ServeMux) {
+	// Create file server for static files
+	fs := http.FileServer(http.FS(ui.TemplatesDirFS))
+	// Handle root path
 	mux.HandleFunc("/", handleIndex)
+	// Handle static files
+	mux.HandleFunc("/static/", func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Cache-Control", "max-age=86400") // Cache for 1 day
+		fs.ServeHTTP(w, r)
+	})
 }
 
 func handleIndex(w http.ResponseWriter, r *http.Request) {

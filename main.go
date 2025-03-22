@@ -22,7 +22,6 @@ func main() {
 
 	// Setup routes
 	mux := http.NewServeMux()
-	handlers.RegisterStaticRoutes(mux)
 	handlers.RegisterIndexRoute(mux)
 	handlers.RegisterDiscoverDevicesRoute(mux)
 
