@@ -5,6 +5,6 @@ import (
 	"io/fs"
 )
 
-//go:embed all:dist
-var distDir embed.FS
-var DistDirFS, _ = fs.Sub(distDir, "dist")
+//go:embed all:templates
+var dir embed.FS
+var TemplatesDirFS, _ = fs.Sub(dir, "templates")
