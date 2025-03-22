@@ -8,11 +8,11 @@ import (
 	"github.com/furkansuleymana/neba/ui"
 )
 
-func RegisterDevicesListRoute(mux *http.ServeMux) {
-	mux.HandleFunc("/devices", handleDevicesList)
+func RegisterDiscoverDevicesRoute(mux *http.ServeMux) {
+	mux.HandleFunc("/discover_devices", handleDiscoverDevices)
 }
 
-func handleDevicesList(w http.ResponseWriter, r *http.Request) {
+func handleDiscoverDevices(w http.ResponseWriter, r *http.Request) {
 	// Discover devices
 	deviceList, err := network.DiscoverSSDP()
 	if err != nil {
@@ -21,14 +21,14 @@ func handleDevicesList(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Parse template from embedded filesystem
-	tmpl, err := template.ParseFS(ui.TemplatesDirFS, "devices.html")
+	template, err := template.ParseFS(ui.TemplatesDirFS, "discover_devices.html")
 	if err != nil {
 		http.Error(w, "Failed to parse template: "+err.Error(), http.StatusInternalServerError)
 		return
 	}
 
 	// Execute template with device list data
-	err = tmpl.Execute(w, deviceList)
+	err = template.Execute(w, deviceList)
 	if err != nil {
 		http.Error(w, "Failed to render template: "+err.Error(), http.StatusInternalServerError)
 		return
