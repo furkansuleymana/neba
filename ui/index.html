@@ -1,1 +1,39 @@
-{{define "content"}} {{end}}
+{{define "content"}}
+<section class="banner">
+  <hgroup>
+    <h2>Welcome to Neba</h2>
+    <p>
+      A user-friendly tool for managing Axis Communications devices that support
+      the VAPIX API.
+    </p>
+  </hgroup>
+  <a href="/discover_devices" role="button">Discover Devices</a>
+</section>
+
+<div class="card-grid">
+  <article>
+    <header>
+      <h3>Discover Devices</h3>
+    </header>
+    <p>
+      Find all Axis products on your network using Bonjour and SSDP discovery
+      protocols.
+    </p>
+    <footer>
+      <a href="/discover_devices" role="button" class="secondary"
+        >Go to Discovery</a
+      >
+    </footer>
+  </article>
+
+  <article>
+    <header>
+      <h3>Device Management</h3>
+    </header>
+    <p>Perform resets, restarts, and retrieve logs from your Axis devices.</p>
+    <footer>
+      <button disabled>Coming Soon</button>
+    </footer>
+  </article>
+</div>
+{{end}}

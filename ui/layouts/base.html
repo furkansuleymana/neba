@@ -4,14 +4,16 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>{{if .Title}}{{.Title}} - Neba{{else}}Neba{{end}}</title>
-    <link rel="stylesheet" href="/static/css/styles.css" />
+    <link rel="stylesheet" href="../static/css/pico.min.css" />
     {{block "head" .}}{{end}}
   </head>
   <body>
     <div class="container">
       <header>
-        <h1>Neba</h1>
-        <p class="subtitle"></p>
+        <hgroup>
+          <h1>Neba</h1>
+          <p></p>
+        </hgroup>
         {{template "navigation" .}}
       </header>
 

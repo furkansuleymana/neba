@@ -1,34 +1,48 @@
 document.addEventListener("DOMContentLoaded", function () {
-  // Highlight current page in navigation
-  const currentPath = window.location.pathname;
-  const navLinks = document.querySelectorAll(".main-nav a");
-
-  navLinks.forEach((link) => {
-    if (link.getAttribute("href") === currentPath) {
-      link.classList.add("active");
-    }
-  });
-
-  // Add fadeIn effect to the main content
-  const mainContent = document.querySelector("main");
-  if (mainContent) {
-    mainContent.style.opacity = "0";
-    mainContent.style.transition = "opacity 0.5s ease-in-out";
-
-    setTimeout(() => {
-      mainContent.style.opacity = "1";
-    }, 100);
-  }
-
   // Add click handlers for save buttons on the discover devices page
   const saveButtons = document.querySelectorAll("button[data-serial]");
   saveButtons.forEach((button) => {
     button.addEventListener("click", function () {
-      alert(`This feature is not yet implemented.`);
-      // TODO: Implement AJAX save functionality when backend is ready
+      // Create a simple modal dialog without Bootstrap
+      const modalContainer = document.createElement("dialog");
+      modalContainer.id = "notImplementedModal";
+
+      modalContainer.innerHTML = `
+        <article>
+          <header>
+            <h3>Not Implemented</h3>
+          </header>
+          <p>This feature is not yet implemented.</p>
+          <footer>
+            <button id="closeModalBtn">Close</button>
+          </footer>
+        </article>
+      `;
+
+      // Add modal to the DOM
+      document.body.appendChild(modalContainer);
+
+      // Show the modal (using the dialog element's built-in show() method)
+      modalContainer.showModal();
+
+      // Close on button click
+      document
+        .getElementById("closeModalBtn")
+        .addEventListener("click", function () {
+          modalContainer.close();
+          document.body.removeChild(modalContainer);
+        });
+
+      // Also close on click outside the modal
+      modalContainer.addEventListener("click", function (event) {
+        if (event.target === modalContainer) {
+          modalContainer.close();
+          document.body.removeChild(modalContainer);
+        }
+      });
     });
   });
 
   // Log that app is initialized
-  console.log("Neba application initialized");
+  console.log("Neba application initialized with Pico CSS");
 });
