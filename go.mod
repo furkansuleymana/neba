@@ -4,6 +4,7 @@ go 1.22
 
 require (
 	github.com/koron/go-ssdp v0.0.5
+	github.com/pkg/browser v0.0.0-20240102092130-5ac0b6a4141c
 	go.etcd.io/bbolt v1.3.11
 )
 

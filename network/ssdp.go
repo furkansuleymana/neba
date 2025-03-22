@@ -6,12 +6,8 @@ import (
 	"io"
 	"net/http"
 
+	"github.com/furkansuleymana/neba/configs"
 	"github.com/koron/go-ssdp"
-)
-
-const (
-	ssdpServiceType    = "urn:axis-com:service:BasicService:1"
-	ssdpMaxWaitTimeSec = 5
 )
 
 // Root represents the root element of the XML response from a device
@@ -75,7 +71,7 @@ type Service struct {
 //     data from a given URL.
 func DiscoverSSDP() ([]map[string]string, error) {
 	// Perform SSDP search for devices matching the specified service type
-	ssdpResponses, err := ssdp.Search(ssdpServiceType, ssdpMaxWaitTimeSec, "")
+	ssdpResponses, err := ssdp.Search(configs.SSDPServiceType, configs.SSDPMaxWaitTimeSec, "")
 	if err != nil {
 		return nil, fmt.Errorf("failed to SSDP search: %w", err)
 	}

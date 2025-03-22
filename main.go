@@ -7,7 +7,7 @@ import (
 
 	"github.com/furkansuleymana/neba/configs"
 	"github.com/furkansuleymana/neba/handlers"
-	"github.com/furkansuleymana/neba/ui"
+	"github.com/pkg/browser"
 )
 
 func main() {
@@ -22,17 +22,14 @@ func main() {
 
 	// Setup routes
 	mux := http.NewServeMux()
-	handlers.RegisterFactoryDefaultRoute(mux)
-	handlers.RegisterFindDevicesRoute(mux)
-	handlers.RegisterRestartRoute(mux)
-	handlers.RegisterStreamRoute(mux)
-	handlers.RegisterDevicesListRoute(mux)
+	handlers.RegisterIndexRoute(mux)
+	handlers.RegisterDiscoverDevicesRoute(mux)
 
-	// Serve UI
-	server := http.FileServer(http.FS(ui.TemplatesDirFS))
-	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		server.ServeHTTP(w, r)
-	})
+	// Open browser
+	err = browser.OpenURL(config.Server.HTTP.Address + config.Server.HTTP.Port)
+	if err != nil {
+		log.Println("Failed to open browser:", err)
+	}
 
 	// Go!
 	log.Fatal(http.ListenAndServe(config.Server.HTTP.Port, mux))

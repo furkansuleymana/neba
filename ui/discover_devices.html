@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Neba - Device List</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <h1>Discovered Devices</h1>
+    <table>
+      <tr>
+        <th>FriendlyName</th>
+        <th>ModelName</th>
+        <th>SerialNumber</th>
+        <th>PresentationURL</th>
+      </tr>
+      {{range .}}
+      <tr>
+        <td>{{.FriendlyName}}</td>
+        <td>{{.ModelName}}</td>
+        <td>{{.SerialNumber}}</td>
+        <td>{{.PresentationURL}}</td>
+      </tr>
+      {{end}}
+    </table>
+  </body>
+</html>
