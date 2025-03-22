@@ -8,10 +8,24 @@ import (
 	"github.com/furkansuleymana/neba/ui"
 )
 
-// PageInfo represents information about a page to be displayed in the index
-type PageInfo struct {
-	Name string
-	Path string
+// NavItem represents a single navigation menu item
+type NavItem struct {
+	Path  string
+	Title string
+}
+
+// PageData contains common data for all pages
+type PageData struct {
+	Title       string
+	CurrentPath string
+	NavItems    []NavItem
+}
+
+// Define navigation items to be used throughout the application
+var navigationItems = []NavItem{
+	{Path: "/", Title: "Home"},
+	{Path: "/discover_devices", Title: "Discover Devices"},
+	// Add more navigation items as needed
 }
 
 func RegisterIndexRoute(mux *http.ServeMux) {
@@ -19,43 +33,32 @@ func RegisterIndexRoute(mux *http.ServeMux) {
 }
 
 func handleIndex(w http.ResponseWriter, r *http.Request) {
-	// If path is not root, let the file server handle it
-	if r.URL.Path != "/" {
+	// If path is not root, and not a static file, let the file server handle it
+	if r.URL.Path != "/" && !strings.HasPrefix(r.URL.Path, "/static/") {
 		http.FileServer(http.FS(ui.TemplatesDirFS)).ServeHTTP(w, r)
 		return
 	}
 
-	// Read all HTML files from the embedded filesystem
-	pages := []PageInfo{}
+	// Create page data with navigation items
+	data := PageData{
+		Title:       "Home",
+		CurrentPath: r.URL.Path,
+		NavItems:    navigationItems,
+	}
 
-	entries, err := ui.TemplatesDirFS.ReadDir(".")
+	// Parse templates from embedded filesystem
+	tmpl, err := template.ParseFS(ui.TemplatesDirFS,
+		"layouts/base.html",
+		"components/navigation.html",
+		"index.html")
 	if err != nil {
-		http.Error(w, "Failed to read templates directory: "+err.Error(), http.StatusInternalServerError)
+		http.Error(w, "Failed to parse templates: "+err.Error(), http.StatusInternalServerError)
 		return
 	}
 
-	for _, entry := range entries {
-		// Skip directories and non-HTML files
-		if entry.IsDir() || !strings.HasSuffix(entry.Name(), ".html") || entry.Name() == "index.html" {
-			continue
-		}
-
-		// Add page info to the list
-		pages = append(pages, PageInfo{
-			Name: strings.TrimSuffix(entry.Name(), ".html"),
-			Path: "/" + entry.Name(),
-		})
-	}
-
-	// Parse template from embedded filesystem
-	tmpl, err := template.ParseFS(ui.TemplatesDirFS, "index.html")
-	if err != nil {
-		http.Error(w, "Failed to parse template: "+err.Error(), http.StatusInternalServerError)
-		return
-	}
-
-	// Execute template with page list data
-	err = tmpl.Execute(w, pages)
+	// Execute template with page data
+	w.Header().Set("Content-Type", "text/html; charset=utf-8")
+	err = tmpl.Execute(w, data)
 	if err != nil {
 		http.Error(w, "Failed to render template: "+err.Error(), http.StatusInternalServerError)
 		return

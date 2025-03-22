@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{{if .Title}}{{.Title}} - Neba{{else}}Neba{{end}}</title>
+    <link rel="stylesheet" href="/static/css/styles.css" />
+    {{block "head" .}}{{end}}
+  </head>
+  <body>
+    <div class="container">
+      <header>
+        <h1>Neba</h1>
+        <p class="subtitle"></p>
+        {{template "navigation" .}}
+      </header>
+
+      <main>{{block "content" .}}{{end}}</main>
+
+      <footer>
+        <p>
+          Neba is an independent project with no official affiliation or
+          endorsement from Axis Communications. Use it at your own risk.
+        </p>
+      </footer>
+    </div>
+
+    <script src="/static/js/main.js"></script>
+    {{block "scripts" .}}{{end}}
+  </body>
+</html>

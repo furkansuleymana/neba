@@ -8,6 +8,14 @@ import (
 	"github.com/furkansuleymana/neba/ui"
 )
 
+// DevicePageData contains the data for the discover_devices page
+type DevicePageData struct {
+	Title       string
+	CurrentPath string
+	NavItems    []NavItem
+	Devices     []map[string]string
+}
+
 func RegisterDiscoverDevicesRoute(mux *http.ServeMux) {
 	mux.HandleFunc("/discover_devices", handleDiscoverDevices)
 }
@@ -20,15 +28,27 @@ func handleDiscoverDevices(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Parse template from embedded filesystem
-	template, err := template.ParseFS(ui.TemplatesDirFS, "discover_devices.html")
+	// Prepare data for template
+	data := DevicePageData{
+		Title:       "Discover Devices",
+		CurrentPath: r.URL.Path,
+		NavItems:    navigationItems,
+		Devices:     deviceList,
+	}
+
+	// Parse templates from embedded filesystem
+	tmpl, err := template.ParseFS(ui.TemplatesDirFS,
+		"layouts/base.html",
+		"components/navigation.html",
+		"discover_devices.html")
 	if err != nil {
-		http.Error(w, "Failed to parse template: "+err.Error(), http.StatusInternalServerError)
+		http.Error(w, "Failed to parse templates: "+err.Error(), http.StatusInternalServerError)
 		return
 	}
 
 	// Execute template with device list data
-	err = template.Execute(w, deviceList)
+	w.Header().Set("Content-Type", "text/html; charset=utf-8")
+	err = tmpl.Execute(w, data)
 	if err != nil {
 		http.Error(w, "Failed to render template: "+err.Error(), http.StatusInternalServerError)
 		return

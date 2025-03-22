@@ -1,0 +1,13 @@
+{{define "navigation"}}
+<nav class="main-nav">
+  <ul>
+    {{range .NavItems}}
+    <li>
+      <a href="{{.Path}}" class="{{if eq $.CurrentPath .Path}}active{{end}}"
+        >{{.Title}}</a
+      >
+    </li>
+    {{end}}
+  </ul>
+</nav>
+{{end}}

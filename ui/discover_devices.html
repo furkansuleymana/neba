@@ -1,26 +1,63 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <title>Neba - Device List</title>
-    <link rel="stylesheet" href="styles.css" />
-  </head>
-  <body>
-    <h1>Discovered Devices</h1>
-    <table>
-      <tr>
-        <th>FriendlyName</th>
-        <th>ModelName</th>
-        <th>SerialNumber</th>
-        <th>PresentationURL</th>
-      </tr>
-      {{range .}}
-      <tr>
-        <td>{{.FriendlyName}}</td>
-        <td>{{.ModelName}}</td>
-        <td>{{.SerialNumber}}</td>
-        <td>{{.PresentationURL}}</td>
-      </tr>
-      {{end}}
+{{define "head"}}
+<meta name="description" content="Discover Axis devices on your network" />
+{{end}} {{define "content"}}
+<section class="devices-section">
+  <h2>Discovered Devices</h2>
+
+  <div class="device-controls">
+    <button id="refresh-devices" class="btn primary">Refresh Devices</button>
+  </div>
+
+  <div class="table-container">
+    <table class="devices-table">
+      <thead>
+        <tr>
+          <th>Friendly Name</th>
+          <th>Model</th>
+          <th>Serial Number</th>
+          <th>Presentation URL</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{if .Devices}} {{range .Devices}}
+        <tr>
+          <td>{{.FriendlyName}}</td>
+          <td>{{.ModelName}}</td>
+          <td>{{.SerialNumber}}</td>
+          <td>
+            <a href="{{.PresentationURL}}" target="_blank" rel="noopener"
+              >{{.PresentationURL}}</a
+            >
+          </td>
+          <td>
+            <div class="action-buttons">
+              <a href="{{.PresentationURL}}" target="_blank" class="btn small"
+                >Open</a
+              >
+              <button class="btn small" data-serial="{{.SerialNumber}}">
+                Save
+              </button>
+            </div>
+          </td>
+        </tr>
+        {{end}} {{else}}
+        <tr>
+          <td colspan="5" class="no-results">
+            No devices found. Click "Refresh Devices" to scan your network.
+          </td>
+        </tr>
+        {{end}}
+      </tbody>
     </table>
-  </body>
-</html>
+  </div>
+</section>
+{{end}} {{define "scripts"}}
+<script>
+  document
+    .getElementById("refresh-devices")
+    .addEventListener("click", function () {
+      window.location.reload();
+    });
+</script>
+{{end}}

@@ -22,15 +22,17 @@ func main() {
 
 	// Setup routes
 	mux := http.NewServeMux()
+	handlers.RegisterStaticRoutes(mux)
 	handlers.RegisterIndexRoute(mux)
 	handlers.RegisterDiscoverDevicesRoute(mux)
 
 	// Open browser
-	err = browser.OpenURL(config.Server.HTTP.Address + config.Server.HTTP.Port)
+	err = browser.OpenURL("http://" + config.Server.HTTP.Address + config.Server.HTTP.Port)
 	if err != nil {
 		log.Println("Failed to open browser:", err)
 	}
 
 	// Go!
+	log.Println("Server starting on", config.Server.HTTP.Port)
 	log.Fatal(http.ListenAndServe(config.Server.HTTP.Port, mux))
 }
