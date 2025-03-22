@@ -1,11 +1,7 @@
 {{define "navigation"}}
-<nav>
-  <ul>
-    {{range .NavItems}}
-    <li>
-      <a href="{{.Path}}"> {{.Title}} </a>
-    </li>
-    {{end}}
-  </ul>
+<nav class="ui menu">
+  {{range .NavItems}}
+  <a href="{{.Path}}" class="item">{{.Title}}</a>
+  {{end}}
 </nav>
 {{end}}

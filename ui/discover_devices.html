@@ -1,63 +1,64 @@
 {{define "head"}}
-<meta name="description" content="Discover  Axis devices on your network" />
+<meta name="description" content="Discover Axis devices on your network" />
 {{end}} {{define "content"}}
-<section class="devices-section">
-  <h2>Discovered Devices</h2>
+<div class="ui container">
+  <div class="ui vertical stripe segment">
+    <h2 class="ui header">Discovered Devices</h2>
 
-  <div class="device-controls">
-    <button id="refresh-devices" class="btn primary">Refresh Devices</button>
-  </div>
+    <div class="ui clearing segment">
+      <button id="refresh-devices" class="ui right floated primary button">
+        <i class="sync icon"></i> Refresh Devices
+      </button>
+    </div>
 
-  <div class="table-container">
-    <table class="devices-table">
-      <thead>
-        <tr>
-          <th>Friendly Name</th>
-          <th>Model</th>
-          <th>Serial Number</th>
-          <th>Presentation URL</th>
-          <th>Actions</th>
-        </tr>
-      </thead>
-      <tbody>
-        {{if .Devices}} {{range .Devices}}
-        <tr>
-          <td>{{.FriendlyName}}</td>
-          <td>{{.ModelName}}</td>
-          <td>{{.SerialNumber}}</td>
-          <td>
-            <a href="{{.PresentationURL}}" target="_blank" rel="noopener"
-              >{{.PresentationURL}}</a
-            >
-          </td>
-          <td>
-            <div class="action-buttons">
-              <a href="{{.PresentationURL}}" target="_blank" class="btn small"
-                >Open</a
-              >
-              <button class="btn small" data-serial="{{.SerialNumber}}">
-                Save
-              </button>
-            </div>
-          </td>
-        </tr>
-        {{end}} {{else}}
-        <tr>
-          <td colspan="5" class="no-results">
-            No devices found. Click "Refresh Devices" to scan your network.
-          </td>
-        </tr>
-        {{end}}
-      </tbody>
-    </table>
+    <div class="ui segment">
+      <table class="ui celled table">
+        <thead>
+          <tr>
+            <th>Friendly Name</th>
+            <th>Model</th>
+            <th>Serial Number</th>
+            <th>Presentation URL</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {{if .Devices}} {{range .Devices}}
+          <tr>
+            <td>{{.FriendlyName}}</td>
+            <td>{{.ModelName}}</td>
+            <td>{{.SerialNumber}}</td>
+            <td>
+              <a href="{{.PresentationURL}}" target="_blank" rel="noopener">
+                {{.PresentationURL}}
+              </a>
+            </td>
+            <td>
+              <div class="ui buttons">
+                <a
+                  href="{{.PresentationURL}}"
+                  target="_blank"
+                  class="ui mini button"
+                  >Open</a
+                >
+                <button class="ui mini button" data-serial="{{.SerialNumber}}">
+                  Save
+                </button>
+              </div>
+            </td>
+          </tr>
+          {{end}} {{else}}
+          <tr>
+            <td colspan="5" class="center aligned">
+              <div class="ui warning message">
+                No devices found. Click "Refresh Devices" to scan your network.
+              </div>
+            </td>
+          </tr>
+          {{end}}
+        </tbody>
+      </table>
+    </div>
   </div>
-</section>
-{{end}} {{define "scripts"}}
-<script>
-  document
-    .getElementById("refresh-devices")
-    .addEventListener("click", function () {
-      window.location.reload();
-    });
-</script>
+</div>
 {{end}}

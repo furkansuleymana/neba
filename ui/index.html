@@ -1,39 +1,31 @@
 {{define "content"}}
-<section class="banner">
-  <hgroup>
-    <h2>Welcome to Neba</h2>
-    <p>
-      A user-friendly tool for managing Axis Communications devices that support
-      the VAPIX API.
-    </p>
-  </hgroup>
-  <a href="/discover_devices" role="button">Discover Devices</a>
-</section>
 
-<div class="card-grid">
-  <article>
-    <header>
-      <h3>Discover Devices</h3>
-    </header>
-    <p>
-      Find all Axis products on your network using Bonjour and SSDP discovery
-      protocols.
-    </p>
-    <footer>
-      <a href="/discover_devices" role="button" class="secondary"
-        >Go to Discovery</a
-      >
-    </footer>
-  </article>
+<div class="ui three column stackable grid container">
+  <div class="column">
+    <div class="ui raised segment">
+      <div class="content">
+        <h3 class="ui header">Discover Devices</h3>
+        <p>
+          Find all Axis products on your network using Bonjour and SSDP
+          discovery protocols.
+        </p>
+        <a href="/discover_devices" class="ui primary button"
+          >Go to Discovery</a
+        >
+      </div>
+    </div>
+  </div>
 
-  <article>
-    <header>
-      <h3>Device Management</h3>
-    </header>
-    <p>Perform resets, restarts, and retrieve logs from your Axis devices.</p>
-    <footer>
-      <button disabled>Coming Soon</button>
-    </footer>
-  </article>
+  <div class="column">
+    <div class="ui raised segment">
+      <div class="content">
+        <h3 class="ui header">Device Management</h3>
+        <p>
+          Perform resets, restarts, and retrieve logs from your Axis devices.
+        </p>
+        <button class="ui disabled button">Coming Soon</button>
+      </div>
+    </div>
+  </div>
 </div>
 {{end}}
