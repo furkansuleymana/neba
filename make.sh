@@ -4,25 +4,57 @@ set -e
 
 # Define variables
 ROOT_DIR="$(pwd)"
-BUILD_DIR_GO="${ROOT_DIR}/build"
-BINARY_NAME="neba"
+BUILD_DIR="${ROOT_DIR}/build"
+BINARY_PATH="${BUILD_DIR}/neba"
 
-# Set environment variables
-export GOOS=darwin
-export GOARCH=amd64
-export CGO_ENABLED=0
-LDFLAGS="-s"
-
-# Build project for production
-build() {
+# Build for production
+prod() {
   clean
   tidy
-  go build -ldflags="${LDFLAGS}" -o "${BUILD_DIR_GO}/${BINARY_NAME}" "${ROOT_DIR}"
+
+  local ldflags="-w -s"
+  local targets=(
+    "darwin/amd64"
+    "darwin/arm64"
+    "linux/amd64"
+    "linux/arm64"
+    "windows/amd64"
+    "windows/arm64"
+  )
+
+  echo "Building for production..."
+
+  local failures=()
+
+  for target in "${targets[@]}"; do
+    IFS="/" read -r GOOS GOARCH <<<"${target}"
+
+    local ext=$([ "$GOOS" == "windows" ] && echo ".exe" || echo "")
+    local binary="${BINARY_PATH}_${GOOS}_${GOARCH}${ext}"
+
+    if (
+      export GOOS="$GOOS" GOARCH="$GOARCH" CGO_ENABLED=0
+      go build -a -ldflags="$ldflags" -o "$binary" "$ROOT_DIR" 2>/dev/null
+    ); then
+      echo "✓ $(basename "$binary")"
+    else
+      echo "✗ Failed"
+      failures+=("$target")
+    fi
+  done
+
+  echo
+  if ((${#failures[@]})); then
+    echo "Build failed for: ${failures[*]}" >&2
+    return 1
+  else
+    echo "All builds completed successfully!"
+  fi
 }
 
-# Run project in development mode
+# Build and run project
 dev() {
-  go build -o "${BUILD_DIR_GO}/${BINARY_NAME}" "${ROOT_DIR}" && "${BUILD_DIR_GO}/${BINARY_NAME}"
+  go build -o "${BINARY_PATH}" "${ROOT_DIR}" && "${BINARY_PATH}"
 }
 
 # Tidy project
@@ -33,7 +65,7 @@ tidy() {
 
 # Clean build directories
 clean() {
-  rm -rf "$BUILD_DIR_GO"
+  rm -rf "$BUILD_DIR"
 }
 
 # Get task name (default to "dev") and
