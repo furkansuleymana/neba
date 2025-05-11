@@ -8,7 +8,7 @@ BUILD_DIR_GO="${ROOT_DIR}/build"
 BINARY_NAME="neba"
 
 # Set environment variables
-export GOOS=linux
+export GOOS=darwin
 export GOARCH=amd64
 export CGO_ENABLED=0
 LDFLAGS="-s"

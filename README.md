@@ -19,7 +19,7 @@ manage devices from smartphones, tablets, or desktop computers.
 
 ## Installation
 
-Neba is not yet operational.
+Neba is not yet operational, but you can [give it a test](https://github.com/furkansuleymana/neba/releases/tag/experimental)!
 
 ## Known Issues
 
