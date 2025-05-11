@@ -54,7 +54,8 @@ prod() {
 
 # Build and run project
 dev() {
-  go build -o "${BINARY_PATH}" "${ROOT_DIR}" && "${BINARY_PATH}"
+  go build -o "${BINARY_PATH}" "${ROOT_DIR}"
+  cd "${BUILD_DIR}" && "${BINARY_PATH}"
 }
 
 # Tidy project
