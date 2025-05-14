@@ -15,12 +15,11 @@ var defaultConfig []byte
 
 const (
 	// Configuration constants
-	storageDir     = "." // TODO: Make this safe for production
 	configFileName = "config.json"
 )
 
 // AppConfig holds the application's configuration settings as defined in the
-// "config.json" file. This includes settings such as the server address and
+// "configFileName" file. This includes settings such as the server address and
 // port. It does not contain any device-specific configurations like
 // IP addresses or serial numbers.
 type AppConfig struct {
@@ -45,7 +44,7 @@ type CManager struct {
 }
 
 // ConfigManager initializes and returns a new configuration manager.
-// It retrieves the current working directory, constructs the configuration
+// It retrieves the executable path, constructs the configuration
 // file path, ensures the configuration file exists, and loads the configuration.
 // If any step fails, an error is returned.
 //
@@ -58,7 +57,12 @@ func ConfigManager() (*CManager, error) {
 		return nil, fmt.Errorf("get working directory: %w", err)
 	}
 
-	configPath := filepath.Join(cwd, storageDir, configFileName)
+	exePath, err := os.Executable() // TODO: Not safe for symlinks
+	if err != nil {
+		panic(fmt.Errorf("cannot determine executable path: %w", err))
+	} // TODO: Maybe don't panic here?
+
+	configPath := filepath.Join(filepath.Dir(exePath), configFileName)
 
 	cm := &CManager{path: configPath}
 
