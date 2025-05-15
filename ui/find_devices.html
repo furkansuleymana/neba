@@ -1,0 +1,57 @@
+{{define "content"}} {{if .Devices}}
+<div class="card table-responsive">
+  <table class="table table-hover">
+    <thead class="table-light">
+      <tr>
+        <th scope="col">Friendly Name</th>
+        <th scope="col">Model</th>
+        <th scope="col">Serial Number</th>
+        <th scope="col">Presentation URL</th>
+        <th scope="col">Actions</th>
+      </tr>
+    </thead>
+    <tbody class="align-middle">
+      {{range .Devices}}
+      <tr>
+        <td>{{.FriendlyName}}</td>
+        <td>{{.ModelName}}</td>
+        <td>{{.SerialNumber}}</td>
+        <td>{{.PresentationURL}}</td>
+        <td>
+          <div class="btn-group btn-group-sm" role="group">
+            <a
+              href="{{.PresentationURL}}"
+              target="_blank"
+              rel="noopener"
+              type="button"
+              class="btn btn-outline-primary"
+              >Open</a
+            >
+            <a
+              target="_blank"
+              rel="noopener"
+              type="button"
+              class="btn btn-outline-primary"
+              >Save</a
+            >
+          </div>
+        </td>
+      </tr>
+      {{end}}
+    </tbody>
+  </table>
+</div>
+{{else}}
+<div class="alert alert-light" role="alert">
+  <h5 class="alert-heading">
+    <i class="bi bi-info-circle"></i>
+    No device found
+  </h5>
+  <hr />
+  No devices were detected on your network at this time. Please ensure your
+  devices are powered on and connected to the same network as this computer. If
+  you believe this is an error, try refreshing the page or checking your network
+  settings. For further assistance, consult the documentation.
+  <p></p>
+</div>
+{{end}} {{end}}

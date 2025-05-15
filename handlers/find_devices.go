@@ -8,39 +8,32 @@ import (
 	"github.com/furkansuleymana/neba/ui"
 )
 
-// DevicePageData contains the data for the discover_devices page
+// DevicePageData contains the data for the find_devices page
 type DevicePageData struct {
-	Title       string
-	CurrentPath string
-	NavItems    []NavItem
-	Devices     []map[string]string
+	Devices []map[string]string
 }
 
-func RegisterDiscoverDevicesRoute(mux *http.ServeMux) {
-	mux.HandleFunc("/discover_devices", handleDiscoverDevices)
+func RegisterFindDevicesRoute(mux *http.ServeMux) {
+	mux.HandleFunc("/find_devices", handleFindDevices)
 }
 
-func handleDiscoverDevices(w http.ResponseWriter, r *http.Request) {
+func handleFindDevices(w http.ResponseWriter, r *http.Request) {
 	// Discover devices
-	deviceList, err := network.DiscoverSSDP()
+	deviceList, err := network.FindSSDP()
 	if err != nil {
-		http.Error(w, "Failed to discover devices: "+err.Error(), http.StatusInternalServerError)
+		http.Error(w, "Failed to find devices: "+err.Error(), http.StatusInternalServerError)
 		return
 	}
 
 	// Prepare data for template
 	data := DevicePageData{
-		Title:       "Discover Devices",
-		CurrentPath: r.URL.Path,
-		NavItems:    navigationItems,
-		Devices:     deviceList,
+		Devices: deviceList,
 	}
 
 	// Parse templates from embedded filesystem
 	tmpl, err := template.ParseFS(ui.TemplatesDirFS,
-		"layouts/base.html",
-		"components/navigation.html",
-		"routes/discover_devices.html")
+		"index.html",
+		"find_devices.html")
 	if err != nil {
 		http.Error(w, "Failed to parse templates: "+err.Error(), http.StatusInternalServerError)
 		return

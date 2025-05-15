@@ -14,6 +14,7 @@ func main() {
 	// Create configuration manager
 	cm, err := configs.ConfigManager()
 	if err != nil {
+		log.Fatal("Failed to create config manager:", err)
 		os.Exit(1)
 	}
 
@@ -23,7 +24,7 @@ func main() {
 	// Setup routes
 	mux := http.NewServeMux()
 	handlers.RegisterIndexRoute(mux)
-	handlers.RegisterDiscoverDevicesRoute(mux)
+	handlers.RegisterFindDevicesRoute(mux)
 
 	// Open browser
 	err = browser.OpenURL("http://" + config.Server.HTTP.Address + config.Server.HTTP.Port)

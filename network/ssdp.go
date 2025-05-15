@@ -54,9 +54,9 @@ type Service struct {
 	SCPDURL     string `xml:"SCPDURL"`
 }
 
-// DiscoverSSDP performs a Simple Service Discovery Protocol (SSDP) search
-// to discover devices on the network. It retrieves and parses the XML
-// data from the discovered devices to extract relevant information.
+// FindSSDP performs a Simple Service Discovery Protocol (SSDP) search
+// to find devices on the network. It retrieves and parses the XML
+// data from the found devices to extract relevant information.
 //
 // Returns:
 //   - A slice of maps, where each map contains device information such as
@@ -69,7 +69,7 @@ type Service struct {
 //   - The function requires the `ssdp` package for performing the SSDP search
 //     and assumes the existence of a `fetchXMLData` function to retrieve XML
 //     data from a given URL.
-func DiscoverSSDP() ([]map[string]string, error) {
+func FindSSDP() ([]map[string]string, error) {
 	// Perform SSDP search for devices matching the specified service type
 	ssdpResponses, err := ssdp.Search(configs.SSDPServiceType, configs.SSDPMaxWaitTimeSec, "")
 	if err != nil {
@@ -79,7 +79,7 @@ func DiscoverSSDP() ([]map[string]string, error) {
 		return nil, fmt.Errorf("no SSDP devices found")
 	}
 
-	// Initialize a slice to store discovered device information
+	// Initialize a slice to store found device information
 	devices := make([]map[string]string, 0, len(ssdpResponses))
 	for _, device := range ssdpResponses {
 		// Fetch XML data from the device's location URL
