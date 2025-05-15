@@ -33,6 +33,6 @@ func main() {
 	}
 
 	// Go!
-	log.Println("Server starting on", config.Server.HTTP.Port)
 	log.Fatal(http.ListenAndServe(config.Server.HTTP.Port, mux))
+	log.Println("Hello from Neba!")
 }
