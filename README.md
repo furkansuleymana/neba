@@ -1,8 +1,8 @@
 # Neba
 
-Neba is an open-source tool designed to provide a user-friendly graphical user interface (GUI) for managing Axis
-Communications devices that support the [VAPIX API](https://developer.axis.com/vapix). This project is currently under
-active development. Breaking changes will occur.
+Neba is a lightweight, cross-platform, and open-source tool designed to provide a user-friendly graphical user interface (GUI) for managing Axis Communications devices that support the [VAPIX API](https://developer.axis.com/vapix).
+
+This project is currently under active development. Breaking changes will occur.
 
 ## Overview
 
@@ -19,22 +19,22 @@ manage devices from smartphones, tablets, or desktop computers.
 
 ## Installation
 
-Neba is not yet operational, but you can [give it a test](https://github.com/furkansuleymana/neba/releases/tag/experimental)!
+Neba is in its very early stages, but you can still [give it a try](https://github.com/furkansuleymana/neba/releases/tag/experimental)!
 
 ## Known Issues
 
-If your Linux firewall is blocking UDP multicast traffic, which is essential for SSDP, Neba will be unable to detect any devices. To resolve this issue, you can either temporarily disable the firewall for testing using the command `sudo systemctl stop firewalld`, or add Neba to the firewall's allowlist.
+If your firewall is blocking UDP multicast traffic, which is essential for SSDP, Neba will be unable to detect any devices. To resolve this issue, you can either temporarily disable the firewall for testing using the command `sudo systemctl stop firewalld` in some Linux distributions, or add Neba to the firewall's allowlist. The same applies to macOS and Windows.
 
 ## Development
 
-Ensure you have [Go 1.22](https://go.dev/doc/install) or later installed. To build the application, simply execute `./make.sh build`
+Ensure you have [Go 1.22](https://go.dev/doc/install) or later installed. To build the application, simply execute `./make.sh tidy && ./make.sh prod`
 in the main project directory. Additional build commands like `dev` and `clean` can be found in the [`make.sh`](make.sh) file.
 
 ## Key Features
 
-- Discover all Axis products using Bonjour and SSDP
-- Perform factory resets or restart devices
-- Retrieve server reports, system logs, or client logs
+- [x] Find all Axis products using SSDP
+- [ ] Perform factory resets or restart devices
+- [ ] Retrieve server reports, system logs, or client logs
 
 ## License
 
