@@ -19,7 +19,7 @@ manage devices from smartphones, tablets, or desktop computers.
 
 ## Installation
 
-Neba is in its very early stages, but you can still [give it a try](https://github.com/furkansuleymana/neba/releases/tag/experimental)!
+Neba is in its very early stages, but you can still [give it a try](https://github.com/furkansuleymana/neba/releases/latest)!
 
 ## Known Issues
 
