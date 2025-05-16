@@ -7,6 +7,7 @@ import (
 
 	"github.com/furkansuleymana/neba/configs"
 	"github.com/furkansuleymana/neba/handlers"
+	"github.com/furkansuleymana/neba/ui"
 	"github.com/pkg/browser"
 )
 
@@ -21,10 +22,16 @@ func main() {
 	// Get current config
 	config := cm.Get()
 
-	// Setup routes
+	// Setup server
+	fs := http.FileServer(http.FS(ui.FS))
 	mux := http.NewServeMux()
-	handlers.RegisterIndexRoute(mux)
-	handlers.RegisterFindDevicesRoute(mux)
+
+	mux.HandleFunc("/static/", func(w http.ResponseWriter, r *http.Request) {
+		fs.ServeHTTP(w, r)
+	})
+
+	handlers.RegisterHomeRoute(fs, mux)
+	handlers.RegisterFindDevicesRoute(fs, mux)
 
 	// Open browser
 	err = browser.OpenURL("http://" + config.Server.HTTP.Address + config.Server.HTTP.Port)

@@ -6,7 +6,7 @@
     <title>Neba</title>
     <link rel="stylesheet" href="/static/bootstrap.min.css" />
     <link rel="stylesheet" href="/static/bootstrap-icons.min.css" />
-    {{block "head" .}}{{end}}
+    {{block "head" .}} {{end}}
   </head>
   <body>
     <header id="header" class="container-sm mt-3">
@@ -39,7 +39,7 @@
     </header>
 
     <main id="main" class="container-sm mt-3">
-      {{block "content" .}}{{end}}
+      {{block "content" .}} {{end}}
     </main>
 
     <footer id="footer" class="container-sm mt-3 mb-3">
@@ -56,6 +56,6 @@
     <script src="/static/bootstrap.bundle.min.js"></script>
     <script src="/static/htmx.min.js"></script>
     <script src="/static/main.js"></script>
-    {{block "scripts" .}}{{end}}
+    {{block "scripts" .}} {{end}}
   </body>
 </html>

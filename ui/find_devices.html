@@ -48,10 +48,15 @@
     No device found
   </h5>
   <hr />
-  No devices were detected on your network at this time. Please ensure your
-  devices are powered on and connected to the same network as this computer. If
-  you believe this is an error, try refreshing the page or checking your network
-  settings. For further assistance, consult the documentation.
-  <p></p>
+  <p>
+    No devices were detected on your network at this time. Please ensure your
+    devices are powered on and connected to the same network as this computer.
+    If you believe this is an error, try refreshing the page or checking your
+    network settings. For further assistance, consult the documentation.
+  </p>
+  {{if .Error}}
+  <hr />
+  <p>Server response: {{.Error}}</p>
+  {{end}}
 </div>
 {{end}} {{end}}

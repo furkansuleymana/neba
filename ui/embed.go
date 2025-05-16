@@ -5,4 +5,4 @@ import (
 )
 
 //go:embed *
-var TemplatesDirFS embed.FS
+var FS embed.FS
