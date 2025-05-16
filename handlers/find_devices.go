@@ -15,8 +15,9 @@ var (
 
 // DevicePageData contains the data for the find_devices page
 type DevicePageData struct {
-	Devices []map[string]string
-	Error   string
+	Devices     []map[string]string
+	DeviceCount int
+	Error       string
 }
 
 func RegisterFindDevicesRoute(fs http.Handler, mux *http.ServeMux) {
@@ -38,6 +39,7 @@ func handleFindDevices(w http.ResponseWriter, r *http.Request) {
 	}
 
 	data.Devices = deviceList
+	data.DeviceCount = len(deviceList)
 
 	if err := findDevicesTmpl.ExecuteTemplate(w, "find_devices.html", data); err != nil {
 		log.Fatalf("Template execution error: %v", err)

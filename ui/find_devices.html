@@ -6,7 +6,10 @@
 
 {{if .Devices}}
 <div class="card table-responsive p-3">
-  <table class="table table-sm table-hover">
+  <table class="table table-sm table-hover caption-top">
+    <caption class="text-end">
+      <em>{{.DeviceCount}} devices found.</em>
+    </caption>
     <thead>
       <tr>
         <th scope="col">Friendly Name</th>
