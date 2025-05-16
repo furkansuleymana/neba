@@ -36,12 +36,13 @@ func main() {
 	handlers.RegisterManageDevicesRoute(fs, mux)
 
 	// Open browser
-	err = browser.OpenURL("http://" + config.Server.HTTP.Address + config.Server.HTTP.Port)
+	url := "http://" + config.Server.HTTP.Address + config.Server.HTTP.Port
+	err = browser.OpenURL(url)
 	if err != nil {
 		log.Println("Failed to open browser:", err)
 	}
 
 	// Go!
+	log.Println("Neba is running!", url)
 	log.Fatal(http.ListenAndServe(config.Server.HTTP.Port, mux))
-	log.Println("Hello from Neba!")
 }
