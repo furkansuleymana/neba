@@ -5,9 +5,9 @@
 </style>
 
 {{if .Devices}}
-<div class="card table-responsive">
-  <table class="table table-hover">
-    <thead class="table-light">
+<div class="card table-responsive p-3">
+  <table class="table table-sm table-hover">
+    <thead>
       <tr>
         <th scope="col">Friendly Name</th>
         <th scope="col">Model</th>
@@ -19,22 +19,20 @@
     <tbody class="align-middle">
       {{range .Devices}}
       <tr>
-        <td class="user-select-all">{{.FriendlyName}}</td>
-        <td class="user-select-all">{{.ModelName}}</td>
-        <td class="user-select-all">{{.SerialNumber}}</td>
-        <td class="user-select-all">{{.PresentationURL}}</td>
+        <td>{{.FriendlyName}}</td>
+        <td>{{.ModelName}}</td>
+        <td>{{.SerialNumber}}</td>
+        <td>{{.PresentationURL}}</td>
         <td>
-          <div class="btn-group" role="group">
-            <button
-              href="{{.PresentationURL}}"
-              target="_blank"
-              rel="noopener"
-              type="button"
-              class="btn btn-outline-primary"
-            >
-              <i class="bi bi-box-arrow-up-right"></i>
-            </button>
-          </div>
+          <a
+            href="{{.PresentationURL}}"
+            target="_blank"
+            rel="noopener"
+            type="button"
+            class="btn btn-sm btn-outline-primary"
+          >
+            <i class="bi bi-box-arrow-up-right"></i>
+          </a>
         </td>
       </tr>
       {{end}}
