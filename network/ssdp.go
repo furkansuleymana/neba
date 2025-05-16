@@ -66,9 +66,9 @@ type Service struct {
 // Notes:
 //   - If fetching or unmarshaling XML data for a device fails, the error
 //     is logged, and the device is skipped.
-//   - The function requires the `ssdp` package for performing the SSDP search
-//     and assumes the existence of a `fetchXMLData` function to retrieve XML
-//     data from a given URL.
+//   - The function requires the "koron/go-ssdp" package for performing the
+//     SSDP search and assumes the existence of a "fetchXMLData" function
+//     to retrieve XML data from a given URL.
 func FindSSDP() ([]map[string]string, error) {
 	// Perform SSDP search for devices matching the specified service type
 	ssdpResponses, err := ssdp.Search(configs.SSDPServiceType, configs.SSDPMaxWaitTimeSec, "")
