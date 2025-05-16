@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"html/template"
+	"log"
 	"net/http"
 
 	"github.com/furkansuleymana/neba/network"
@@ -21,8 +22,7 @@ func handleFindDevices(w http.ResponseWriter, r *http.Request) {
 	// Discover devices
 	deviceList, err := network.FindSSDP()
 	if err != nil {
-		http.Error(w, "Failed to find devices: "+err.Error(), http.StatusInternalServerError)
-		return
+		log.Println("Error discovering devices:", err)
 	}
 
 	// Prepare data for template
