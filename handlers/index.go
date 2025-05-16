@@ -9,21 +9,21 @@ import (
 )
 
 var (
-	homeTmpl *template.Template
+	rootTmpl *template.Template
 )
 
-func RegisterHomeRoute(fs http.Handler, mux *http.ServeMux) {
+func RegisterRootRoute(fs http.Handler, mux *http.ServeMux) {
 	var err error
-	homeTmpl, err = template.ParseFS(ui.FS, "home.html")
+	rootTmpl, err = template.ParseFS(ui.FS, "index.html")
 	if err != nil {
 		log.Fatalf("Failed to parse templates: %v", err)
 	}
 
-	mux.HandleFunc("/home", handleHome)
+	mux.HandleFunc("/", handleRoot)
 }
 
-func handleHome(w http.ResponseWriter, r *http.Request) {
-	if err := homeTmpl.ExecuteTemplate(w, "home.html", nil); err != nil {
+func handleRoot(w http.ResponseWriter, r *http.Request) {
+	if err := rootTmpl.ExecuteTemplate(w, "index.html", nil); err != nil {
 		log.Fatalf("Template execution error: %v", err)
 		http.Error(w, "Internal server error", http.StatusInternalServerError)
 		return

@@ -6,41 +6,66 @@
     <title>Neba</title>
     <link rel="stylesheet" href="/static/bootstrap.min.css" />
     <link rel="stylesheet" href="/static/bootstrap-icons.min.css" />
-    {{block "head" .}} {{end}}
   </head>
   <body>
-    <header id="header" class="container-sm mt-3">
+    <header
+      id="header"
+      class="container-sm mt-3"
+      hx-get="/home"
+      hx-target="#main"
+      hx-trigger="load"
+    >
       <div class="card">
         <div
           class="card-body d-flex align-items-center justify-content-between"
         >
-          <h5 class="m-0">Neba — Axis Device Management Tool</h5>
+          <h5 class="m-0" type="button" hx-get="/home" hx-target="#main">
+            Neba — Axis Device Management Tool
+          </h5>
           <div class="dropdown">
             <button
-              class="btn btn-light dropdown-toggle"
+              class="btn btn-primary dropdown-toggle"
               type="button"
               data-bs-toggle="dropdown"
               aria-expanded="false"
             >
-              Menu
+              <i class="bi bi-list"></i>
             </button>
             <ul class="dropdown-menu dropdown-menu-lg-end">
-              <li><a href="/" class="dropdown-item" href="#">Home</a></li>
               <li>
-                <a href="/find_devices" class="dropdown-item" href="#"
+                <a
+                  class="dropdown-item"
+                  type="button"
+                  hx-get="/home"
+                  hx-target="#main"
+                  >Home</a
+                >
+              </li>
+              <li>
+                <a
+                  class="dropdown-item"
+                  type="button"
+                  hx-get="/find_devices"
+                  hx-target="#main"
                   >Find Devices</a
                 >
               </li>
-              <li><a class="dropdown-item" href="#">Manage Devices</a></li>
+              <li>
+                <a
+                  class="dropdown-item"
+                  type="button"
+                  hx-get="/manage_devices"
+                  hx-target="#main"
+                  >Manage Devices</a
+                >
+              </li>
             </ul>
           </div>
         </div>
       </div>
     </header>
 
-    <main id="main" class="container-sm mt-3">
-      {{block "content" .}} {{end}}
-    </main>
+    <main id="main" class="container-sm mt-3"></main>
 
     <footer id="footer" class="container-sm mt-3 mb-3">
       <div class="card">
@@ -56,6 +81,5 @@
     <script src="/static/bootstrap.bundle.min.js"></script>
     <script src="/static/htmx.min.js"></script>
     <script src="/static/main.js"></script>
-    {{block "scripts" .}} {{end}}
   </body>
 </html>

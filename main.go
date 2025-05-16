@@ -30,8 +30,10 @@ func main() {
 		fs.ServeHTTP(w, r)
 	})
 
+	handlers.RegisterRootRoute(fs, mux)
 	handlers.RegisterHomeRoute(fs, mux)
 	handlers.RegisterFindDevicesRoute(fs, mux)
+	handlers.RegisterManageDevicesRoute(fs, mux)
 
 	// Open browser
 	err = browser.OpenURL("http://" + config.Server.HTTP.Address + config.Server.HTTP.Port)

@@ -1,22 +1,37 @@
-{{define "content"}}
-<div class="card">
+<style>
+  .hover-elevate {
+    transition: box-shadow 0.2s ease;
+  }
+  .hover-elevate:hover {
+    box-shadow: var(--bs-box-shadow);
+  }
+</style>
+
+<div
+  class="card hover-elevate"
+  type="button"
+  hx-get="/find_devices"
+  hx-target="#main"
+>
   <div class="card-body">
     <h5 class="card-title">Find Devices</h5>
     <p class="card-text">
       Find all Axis products on your network using the Simple Service Discovery
       Protocol (SSDP).
     </p>
-    <a href="/find_devices" type="button" class="btn btn-primary">Go</a>
   </div>
 </div>
 
-<div class="card mt-3">
+<div
+  class="card mt-3 hover-elevate"
+  type="button"
+  hx-get="/manage_devices"
+  hx-target="#main"
+>
   <div class="card-body">
     <h5 class="card-title">Manage Devices</h5>
     <p class="card-text">
       Perform resets, restarts, and retrieve logs from your Axis devices.
     </p>
-    <a type="button" class="btn btn-primary" disabled>Coming Soon</a>
   </div>
 </div>
-{{end}}
