@@ -1,4 +1,4 @@
-{{define "content"}} {{if .Devices}}
+{{if .Devices}}
 <div class="card table-responsive">
   <table class="table table-hover">
     <thead class="table-light">
@@ -13,10 +13,10 @@
     <tbody class="align-middle">
       {{range .Devices}}
       <tr>
-        <td>{{.FriendlyName}}</td>
-        <td>{{.ModelName}}</td>
-        <td>{{.SerialNumber}}</td>
-        <td>{{.PresentationURL}}</td>
+        <td class="user-select-all">{{.FriendlyName}}</td>
+        <td class="user-select-all">{{.ModelName}}</td>
+        <td class="user-select-all">{{.SerialNumber}}</td>
+        <td class="user-select-all">{{.PresentationURL}}</td>
         <td>
           <div class="btn-group btn-group-sm" role="group">
             <a
@@ -59,4 +59,4 @@
   <p>Server response: {{.Error}}</p>
   {{end}}
 </div>
-{{end}} {{end}}
+{{end}}
