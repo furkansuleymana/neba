@@ -37,8 +37,8 @@ tmp_dir = "build/tmp"
   watcher = "cyan"
 
 [log]
-  main_only = false
-  silent = false
+  main_only = true
+  silent = true
   time = false
 
 [misc]
