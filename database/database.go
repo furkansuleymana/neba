@@ -24,14 +24,13 @@ func Open(dbPath string, bucketName string) (*bbolt.DB, error) {
 		return nil, fmt.Errorf("open database, %v", err)
 	}
 
-	err = db.Update(func(tx *bbolt.Tx) error {
+	if err = db.Update(func(tx *bbolt.Tx) error {
 		_, err := tx.CreateBucketIfNotExists([]byte(bucketName))
 		if err != nil {
 			return fmt.Errorf("create bucket: %v", err)
 		}
 		return nil
-	})
-	if err != nil {
+	}); err != nil {
 		return nil, fmt.Errorf("set up bucket, %v", err)
 	}
 

@@ -91,8 +91,7 @@ func DiscoverSSDP() ([]map[string]string, error) {
 
 		// Unmarshal the XML data into the Root struct
 		var root Root
-		err = xml.Unmarshal(xmlData, &root)
-		if err != nil {
+		if err = xml.Unmarshal(xmlData, &root); err != nil {
 			fmt.Printf("failed to unmarshal XML data: %v\n", err)
 			continue // Skip this device if unmarshaling fails
 		}

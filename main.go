@@ -37,8 +37,7 @@ func main() {
 
 	// Open browser
 	url := "http://" + config.Server.HTTP.Address + config.Server.HTTP.Port
-	err = browser.OpenURL(url)
-	if err != nil {
+	if err = browser.OpenURL(url); err != nil {
 		log.Println("Failed to open browser:", err)
 	}
 
