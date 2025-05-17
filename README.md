@@ -32,7 +32,7 @@ in the main project directory. Additional build commands like `dev` and `clean` 
 
 ## Key Features
 
-- [x] Find all Axis products using SSDP
+- [x] Discover Axis products using SSDP
 - [ ] Perform factory resets or restart devices
 - [ ] Retrieve server reports, system logs, or client logs
 

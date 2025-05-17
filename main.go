@@ -32,7 +32,7 @@ func main() {
 
 	handlers.RegisterRootRoute(fs, mux)
 	handlers.RegisterHomeRoute(fs, mux)
-	handlers.RegisterFindDevicesRoute(fs, mux)
+	handlers.RegisterDiscoverDevicesRoute(fs, mux)
 	handlers.RegisterManageDevicesRoute(fs, mux)
 
 	// Open browser

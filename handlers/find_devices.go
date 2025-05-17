@@ -10,30 +10,30 @@ import (
 )
 
 var (
-	findDevicesTmpl *template.Template
+	discoverDevicesTmpl *template.Template
 )
 
-// DevicePageData contains the data for the find_devices page
+// DevicePageData contains the data for the /discover page
 type DevicePageData struct {
 	Devices     []map[string]string
 	DeviceCount int
 	Error       string
 }
 
-func RegisterFindDevicesRoute(fs http.Handler, mux *http.ServeMux) {
+func RegisterDiscoverDevicesRoute(fs http.Handler, mux *http.ServeMux) {
 	var err error
-	findDevicesTmpl, err = template.ParseFS(ui.FS, "find_devices.html")
+	discoverDevicesTmpl, err = template.ParseFS(ui.FS, "discover.html")
 	if err != nil {
 		log.Fatalf("Failed to parse templates: %v", err)
 	}
 
-	mux.HandleFunc("/find_devices", handleFindDevices)
+	mux.HandleFunc("/discover", handleDiscoverDevices)
 }
 
-func handleFindDevices(w http.ResponseWriter, r *http.Request) {
+func handleDiscoverDevices(w http.ResponseWriter, r *http.Request) {
 	data := DevicePageData{}
 
-	deviceList, err := network.FindSSDP()
+	deviceList, err := network.DiscoverSSDP()
 	if err != nil {
 		data.Error = err.Error()
 	}
@@ -41,7 +41,7 @@ func handleFindDevices(w http.ResponseWriter, r *http.Request) {
 	data.Devices = deviceList
 	data.DeviceCount = len(deviceList)
 
-	if err := findDevicesTmpl.ExecuteTemplate(w, "find_devices.html", data); err != nil {
+	if err := discoverDevicesTmpl.ExecuteTemplate(w, "discover.html", data); err != nil {
 		log.Fatalf("Template execution error: %v", err)
 		http.Error(w, "Internal server error", http.StatusInternalServerError)
 		return

@@ -54,8 +54,8 @@ type Service struct {
 	SCPDURL     string `xml:"SCPDURL"`
 }
 
-// FindSSDP performs a Simple Service Discovery Protocol (SSDP) search
-// to find devices on the network. It retrieves and parses the XML
+// DiscoverSSDP performs a Simple Service Discovery Protocol (SSDP) search
+// to discover devices on the network. It retrieves and parses the XML
 // data from the found devices to extract relevant information.
 //
 // Returns:
@@ -69,7 +69,7 @@ type Service struct {
 //   - The function requires the "koron/go-ssdp" package for performing the
 //     SSDP search and assumes the existence of a "fetchXMLData" function
 //     to retrieve XML data from a given URL.
-func FindSSDP() ([]map[string]string, error) {
+func DiscoverSSDP() ([]map[string]string, error) {
 	// Perform SSDP search for devices matching the specified service type
 	ssdpResponses, err := ssdp.Search(configs.SSDPServiceType, configs.SSDPMaxWaitTimeSec, "")
 	if err != nil {
