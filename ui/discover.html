@@ -5,11 +5,24 @@
 </style>
 
 {{if .Devices}}
-<div class="card table-responsive p-3">
-  <table class="table table-sm table-hover caption-top">
-    <caption class="text-end">
+<div
+  class="card p-3 table-responsive"
+  x-data="{ search: '' }"
+>
+  <div class="align-items-center d-flex justify-content-between mb-3">
+    <input
+      autofocus
+      class="form-control"
+      placeholder="Search..."
+      style="max-width: 250px"
+      type="text"
+      x-model="search"
+    />
+    <span class="ms-auto">
       <em>{{.DeviceCount}} devices found.</em>
-    </caption>
+    </span>
+  </div>
+  <table class="table table-hover table-sm">
     <thead>
       <tr>
         <th scope="col">Friendly Name</th>
@@ -19,20 +32,30 @@
         <th scope="col"></th>
       </tr>
     </thead>
-    <tbody class="align-middle">
+    <tbody
+      class="align-middle"
+      id="devices"
+    >
       {{range .Devices}}
-      <tr>
+      <tr
+        x-show="
+          search === '' ||
+          '{{.FriendlyName}} {{.ModelName}} {{.SerialNumber}} {{.PresentationURL}}'
+            .toLowerCase()
+            .includes(search.toLowerCase())
+        "
+      >
         <td>{{.FriendlyName}}</td>
         <td>{{.ModelName}}</td>
         <td>{{.SerialNumber}}</td>
         <td>{{.PresentationURL}}</td>
         <td>
           <a
-            href="{{.PresentationURL}}"
-            target="_blank"
-            rel="noopener"
-            type="button"
             class="btn btn-sm btn-outline-primary"
+            href="{{.PresentationURL}}"
+            rel="noopener"
+            target="_blank"
+            type="button"
           >
             <i class="bi bi-box-arrow-up-right"></i>
           </a>
@@ -43,7 +66,10 @@
   </table>
 </div>
 {{else}}
-<div class="alert alert-light" role="alert">
+<div
+  class="alert alert-light"
+  role="alert"
+>
   <h5 class="alert-heading">
     <i class="bi bi-info-circle"></i>
     No device found

@@ -2,32 +2,51 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0"
+    />
     <title>Neba</title>
-    <link rel="stylesheet" href="/static/bootstrap.min.css" />
-    <link rel="stylesheet" href="/static/bootstrap-icons.min.css" />
+    <link
+      href="/static/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="/static/bootstrap-icons.min.css"
+      rel="stylesheet"
+    />
+    <style>
+      body {
+        overflow-y: scroll;
+      }
+    </style>
   </head>
   <body>
     <header
-      id="header"
       class="container-sm mt-3"
       hx-get="/home"
       hx-target="#main"
       hx-trigger="load"
+      id="header"
     >
       <div class="card">
         <div
-          class="card-body d-flex align-items-center justify-content-between"
+          class="align-items-center card-body d-flex justify-content-between"
         >
-          <h5 class="m-0" type="button" hx-get="/home" hx-target="#main">
+          <h5
+            class="m-0"
+            hx-get="/home"
+            hx-target="#main"
+            type="button"
+          >
             Neba — Axis Device Management Tool
           </h5>
           <div class="dropdown">
             <button
-              class="btn btn-primary dropdown-toggle"
-              type="button"
-              data-bs-toggle="dropdown"
               aria-expanded="false"
+              class="btn btn-primary dropdown-toggle"
+              data-bs-toggle="dropdown"
+              type="button"
             >
               <i class="bi bi-list"></i>
             </button>
@@ -35,27 +54,27 @@
               <li>
                 <a
                   class="dropdown-item"
-                  type="button"
                   hx-get="/home"
                   hx-target="#main"
+                  type="button"
                   >Home</a
                 >
               </li>
               <li>
                 <a
                   class="dropdown-item"
-                  type="button"
                   hx-get="/discover"
                   hx-target="#main"
+                  type="button"
                   >Discover Devices</a
                 >
               </li>
               <li>
                 <a
                   class="dropdown-item"
-                  type="button"
                   hx-get="/manage"
                   hx-target="#main"
+                  type="button"
                   >Manage Devices</a
                 >
               </li>
@@ -65,9 +84,15 @@
       </div>
     </header>
 
-    <main id="main" class="container-sm mt-3"></main>
+    <main
+      class="container-sm mt-3"
+      id="main"
+    ></main>
 
-    <footer id="footer" class="container-sm mt-3 mb-3">
+    <footer
+      class="container-sm mb-3 mt-3"
+      id="footer"
+    >
       <div class="card">
         <div class="card-body">
           <p class="card-text">
@@ -80,6 +105,7 @@
 
     <script src="/static/bootstrap.bundle.min.js"></script>
     <script src="/static/htmx.min.js"></script>
+    <script src="/static/alpine.min.js"></script>
     <script src="/static/main.js"></script>
   </body>
 </html>
